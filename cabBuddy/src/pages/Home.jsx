@@ -9,15 +9,15 @@ export default function Home() {
 
       {/* Hero Section with Background Image */}
       <div
-        className="h-[70vh] w-full bg-cover bg-center flex flex-col items-center justify-center text-center pt-40"
+        className="h-[45vh] w-full bg-cover bg-center flex flex-col items-center justify-center text-center pt-8"
         style={{
           backgroundImage: "url('/assets/pic1.svg')",
         }}
       >
-        <h1 className="text-5xl font-bold text-white mb-2">
-         Quality rides that fit your budget
+        <h1 className="text-5xl font-bold text-white mt-10">
+          Quality rides that fit your budget
         </h1>
-        <p className="text-white text-lg mb-55">
+        <p className="text-white text-lg mb-40">
           Book your cab quickly and easily
         </p>
 
@@ -26,7 +26,9 @@ export default function Home() {
       </div>
 
       {/* Feature Cards Section */}
-      <FeatureCards />
+      <div className="mt-[20vh] md:mt-40">
+        <FeatureCards />
+      </div>
     </div>
   );
 }

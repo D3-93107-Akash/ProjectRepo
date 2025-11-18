@@ -14,10 +14,13 @@ export default function SearchBox() {
 
   return (
     <div className="w-full flex justify-center mt-4">
-      <div className="w-[75%] flex bg-white rounded-2xl shadow-xl overflow-hidden">
+      
+      <div className="w-[95%] md:w-[75%] 
+                      flex flex-col md:flex-row 
+                      bg-white rounded-2xl shadow-xl overflow-hidden">
 
         {/* Leaving From */}
-        <div className="flex items-center gap-2 px-4 py-4 flex-1 border-r hover:bg-gray-100 cursor-pointer transition">
+        <div className="flex items-center gap-2 px-4 py-4 flex-1 border-b md:border-b-0 md:border-r hover:bg-gray-100 cursor-pointer transition">
           <MapPin className="h-5 w-5 text-gray-600" />
           <Input
             placeholder="Leaving from"
@@ -26,7 +29,7 @@ export default function SearchBox() {
         </div>
 
         {/* Going To */}
-        <div className="flex items-center gap-2 px-4 py-4 flex-1 border-r hover:bg-gray-100 cursor-pointer transition">
+        <div className="flex items-center gap-2 px-4 py-4 flex-1 border-b md:border-b-0 md:border-r hover:bg-gray-100 cursor-pointer transition">
           <MapPin className="h-5 w-5 text-gray-600" />
           <Input
             placeholder="Going to"
@@ -37,7 +40,7 @@ export default function SearchBox() {
         {/* Date Picker */}
         <Popover>
           <PopoverTrigger asChild>
-            <div className="flex items-center gap-2 px-4 py-4 flex-1 border-r cursor-pointer hover:bg-gray-100 transition">
+            <div className="flex items-center gap-2 px-4 py-4 flex-1 border-b md:border-b-0 md:border-r cursor-pointer hover:bg-gray-100 transition">
               <CalendarDays className="h-5 w-5 text-gray-600" />
               <span className="text-gray-700">
                 {format(date, "dd MMM yyyy")}
@@ -45,7 +48,7 @@ export default function SearchBox() {
             </div>
           </PopoverTrigger>
 
-          <PopoverContent className="p-0 bg-white">
+          <PopoverContent className="p-0 bg-white ">
             <Calendar
               mode="single"
               selected={date}
@@ -58,7 +61,7 @@ export default function SearchBox() {
         {/* Passenger Picker */}
         <Popover>
           <PopoverTrigger asChild>
-            <div className="flex items-center gap-2 px-4 py-4 flex-1 border-r cursor-pointer hover:bg-gray-100 transition">
+            <div className="flex items-center gap-2 px-4 py-4 flex-1 border-b md:border-b-0 md:border-r cursor-pointer hover:bg-gray-100 transition">
               <Users className="h-5 w-5 text-gray-600" />
               <span className="text-gray-700">
                 {passengers} Passenger{passengers > 1 ? "s" : ""}
@@ -90,7 +93,10 @@ export default function SearchBox() {
         </Popover>
 
         {/* Search Button */}
-        <Button className="bg-[#00AFFF] text-white font-semibold w-[130px] text-lg rounded-none h-full cursor-pointer hover:bg-[#0095db] transition">
+        <Button className="bg-[#00AFFF] text-white font-semibold 
+                           w-full md:w-[130px] 
+                           text-lg rounded-none h-full 
+                           cursor-pointer hover:bg-[#0095db] transition">
           Search
         </Button>
 
