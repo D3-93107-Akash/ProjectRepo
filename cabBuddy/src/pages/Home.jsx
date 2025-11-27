@@ -7,7 +7,7 @@ export default function Home() {
   return (
     <div className="w-full">
 
-      {/* Hero Section with Background Image */}
+
       <div
         className="h-[45vh] w-full bg-cover bg-center flex flex-col items-center justify-center text-center pt-8"
         style={{
@@ -21,11 +21,11 @@ export default function Home() {
           Book your cab quickly and easily
         </p>
 
-        {/* Your Existing Search Box */}
+        
         <SearchBox />
       </div>
 
-      {/* Feature Cards Section */}
+   
       <div className="mt-[20vh] md:mt-40">
         <FeatureCards />
       </div>

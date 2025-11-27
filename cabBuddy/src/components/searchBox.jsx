@@ -19,7 +19,7 @@ export default function SearchBox() {
                       flex flex-col md:flex-row 
                       bg-white rounded-2xl shadow-xl overflow-hidden">
 
-        {/* Leaving From */}
+       
         <div className="flex items-center gap-2 px-4 py-4 flex-1 border-b md:border-b-0 md:border-r hover:bg-gray-100 cursor-pointer transition">
           <MapPin className="h-5 w-5 text-gray-600" />
           <Input
@@ -28,7 +28,7 @@ export default function SearchBox() {
           />
         </div>
 
-        {/* Going To */}
+   
         <div className="flex items-center gap-2 px-4 py-4 flex-1 border-b md:border-b-0 md:border-r hover:bg-gray-100 cursor-pointer transition">
           <MapPin className="h-5 w-5 text-gray-600" />
           <Input
@@ -37,7 +37,7 @@ export default function SearchBox() {
           />
         </div>
 
-        {/* Date Picker */}
+       
         <Popover>
           <PopoverTrigger asChild>
             <div className="flex items-center gap-2 px-4 py-4 flex-1 border-b md:border-b-0 md:border-r cursor-pointer hover:bg-gray-100 transition">
@@ -58,7 +58,6 @@ export default function SearchBox() {
           </PopoverContent>
         </Popover>
 
-        {/* Passenger Picker */}
         <Popover>
           <PopoverTrigger asChild>
             <div className="flex items-center gap-2 px-4 py-4 flex-1 border-b md:border-b-0 md:border-r cursor-pointer hover:bg-gray-100 transition">
@@ -92,7 +91,7 @@ export default function SearchBox() {
           </PopoverContent>
         </Popover>
 
-        {/* Search Button */}
+    
         <Button className="bg-[#00AFFF] text-white font-semibold 
                            w-full md:w-[130px] 
                            text-lg rounded-none h-full 
