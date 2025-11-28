@@ -54,6 +54,7 @@ export default function SearchBox() {
               selected={date}
               onSelect={(d) => d && setDate(d)}
               initialFocus
+              disabled={{ before: new Date() }}
             />
           </PopoverContent>
         </Popover>
