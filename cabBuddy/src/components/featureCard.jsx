@@ -5,7 +5,7 @@ export default function FeatureCards() {
     <div className="w-full flex justify-center mt-16 mb-20">
       <div className="w-[75%] grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
         
-        {/* Card 1 */}
+        { /* Card 1 */ }
         <div className="flex flex-col items-center">
           <div className="bg-gray-100 p-5 rounded-full mb-4">
             <Users className="h-8 w-8 text-[#004c55]" />
