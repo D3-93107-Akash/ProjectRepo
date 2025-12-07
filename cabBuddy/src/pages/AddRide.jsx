@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -5,12 +6,19 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 export default function PublishRide() {
   const [date, setDate] = useState(new Date());
-  const [value, setValue] = useState(2); 
+  const [value, setValue] = useState(2);
   const [fromCity, setFromCity] = useState("Delhi");
   const [toCity, setToCity] = useState("Jaipur");
+  const navigate = useNavigate();
+
+  const goToPickup=()=>{
+     navigate("/pickup")
+  }
 
   const handleSwap = () => {
     setFromCity(toCity);
@@ -34,6 +42,19 @@ export default function PublishRide() {
     if (value > 8) setValue(8);
   };
 
+  const handlePublish = () => {
+   if(fromCity!="" && toCity!=""){
+    toast.success(
+      `Ride published from ${fromCity} to ${toCity} for ${value || 0} passengers on ${date.toDateString()}`
+    );
+   }
+   else{
+    toast.warn(
+      `Please fill all the fields!!`
+    );
+   }
+  };
+
   return (
     <div className="w-full bg-[#E9F5FB] py-12 flex flex-col items-center">
       <h1 className="text-4xl font-bold text-[#003366] text-center">
@@ -44,12 +65,9 @@ export default function PublishRide() {
       </p>
 
       <div className="mt-10 flex items-center gap-20 max-w-6xl">
-    
         <Card className="group w-[350px] border-none rounded-3xl bg-white shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
           <CardContent className="p-6 space-y-4">
-           
             <div className="space-y-4">
-             
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3 flex-1">
                   <span className="h-4 w-4 rounded-full border-2 border-gray-400 transition-colors duration-200 group-hover:border-[#009EEB]" />
@@ -84,7 +102,6 @@ export default function PublishRide() {
               </div>
             </div>
 
-          
             <div className="pt-2">
               <Label className="font-medium mb-1 block text-sm text-gray-700">
                 Date
@@ -130,7 +147,6 @@ export default function PublishRide() {
               />
             </div>
 
-        
             <p className="text-lg font-semibold leading-snug pt-1">
               Save up to{" "}
               <span className="text-[#009EEB] text-2xl font-bold group-hover:text-[#0077b6] transition-colors duration-200">
@@ -139,14 +155,15 @@ export default function PublishRide() {
               on your first ride.
             </p>
 
-          
-            <Button className="w-full bg-[#009EEB] hover:bg-[#0085c7] text-white font-bold rounded-xl mt-2 transition-transform duration-200 hover:scale-[1.02]">
+            <Button
+              className="w-full bg-[#00aff5] hover:bg-[#0085c7] text-white font-bold rounded-xl mt-2 transition-transform duration-200 hover:scale-[1.02]"
+              onClick={goToPickup}
+            >
               Publish a ride
             </Button>
           </CardContent>
         </Card>
 
-      
         <img
           src="/assets/pic2.svg"
           alt="carpool"

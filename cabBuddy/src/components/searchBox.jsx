@@ -7,10 +7,27 @@ import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover
 import { Calendar } from "@/components/ui/calendar";
 import { CalendarDays, MapPin, Users } from "lucide-react";
 import { format } from "date-fns";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+
 
 export default function SearchBox() {
+  const[leaveFrom,setLeaveFrom] = useState("")
+  const[goingTo,setGoingTo] = useState("")
+  const navigate = useNavigate();
+
   const [date, setDate] = useState(new Date());
   const [passengers, setPassengers] = useState(1);
+
+
+  const searchHandle=()=>{
+    if (leaveFrom !== "" && goingTo !== "") {
+       navigate("/search")
+    }
+    else{
+      toast.warn("All fields are compulsory!!");
+    }
+  }
 
   return (
     <div className="w-full flex justify-center mt-4">
@@ -23,6 +40,8 @@ export default function SearchBox() {
         <div className="flex items-center gap-2 px-4 py-4 flex-1 border-b md:border-b-0 md:border-r hover:bg-gray-100 cursor-pointer transition">
           <MapPin className="h-5 w-5 text-gray-600" />
           <Input
+            value={leaveFrom}
+            onChange={(e) => setLeaveFrom(e.target.value)}
             placeholder="Leaving from"
             className="border-none shadow-none focus-visible:ring-0 p-0"
           />
@@ -32,6 +51,8 @@ export default function SearchBox() {
         <div className="flex items-center gap-2 px-4 py-4 flex-1 border-b md:border-b-0 md:border-r hover:bg-gray-100 cursor-pointer transition">
           <MapPin className="h-5 w-5 text-gray-600" />
           <Input
+            value={goingTo}
+            onChange={(e) => setGoingTo(e.target.value)}
             placeholder="Going to"
             className="border-none shadow-none focus-visible:ring-0 p-0"
           />
@@ -93,7 +114,9 @@ export default function SearchBox() {
         </Popover>
 
     
-        <Button className="bg-[#00AFFF] text-white font-semibold 
+        <Button 
+        onClick={searchHandle}
+        className="bg-[#00AFFF] text-white font-semibold 
                            w-full md:w-[130px] 
                            text-lg rounded-none h-full 
                            cursor-pointer hover:bg-[#0095db] transition">
