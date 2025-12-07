@@ -4,14 +4,15 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Search, Plus, ChevronDown, Menu } from "lucide-react"
 import { useState } from "react"
 
+
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   return (
-    <header className="bg-white shadow-sm">
+    <header className="bg-white shadow-sm sticky top-0 z-50">
       <div className="container mx-auto px-6 py-3 flex items-center justify-between">
 
-        {/* ===== Left Section: Logo ===== */}
+       
         <div className="flex items-center gap-2">
           <div className="text-3xl text-blue-500">“</div>
           <Link to="/" className="text-2xl font-bold text-[#003366]">
@@ -19,9 +20,9 @@ export default function Navbar() {
           </Link>
         </div>
 
-        {/* ===== Middle + Right Section (flex together) ===== */}
+       
         <div className="flex items-center gap-8">
-          {/* ===== Middle Section: Nav Buttons ===== */}
+       
           <nav className="hidden md:flex items-center gap-6">
             <Link
               to="/search"
@@ -32,7 +33,7 @@ export default function Navbar() {
             </Link>
 
             <Link
-              to="/add-ride"
+              to="/publish-ride"
               className="flex items-center text-blue-500 font-medium hover:text-blue-600"
             >
               <Plus className="h-5 w-5 mr-1" />
@@ -40,7 +41,7 @@ export default function Navbar() {
             </Link>
           </nav>
 
-          {/* ===== Right Section: Profile Dropdown ===== */}
+         
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <div className="flex items-center gap-1 cursor-pointer">
@@ -62,13 +63,19 @@ export default function Navbar() {
               <DropdownMenuItem asChild>
                 <Link to="/my-bookings">My Bookings</Link>
               </DropdownMenuItem>
+                
+              <DropdownMenuItem asChild>
+                <Link to="/my-payments">Payments</Link>
+              </DropdownMenuItem>
+
+
               <DropdownMenuItem asChild>
                 <Link to="/logout">Logout</Link>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
 
-          {/* ===== Hamburger Button (Mobile) ===== */}
+         
           <button
             className="md:hidden text-blue-500"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -78,7 +85,7 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* ===== Mobile Menu ===== */}
+    
       {isMenuOpen && (
         <div className="md:hidden bg-white shadow-inner px-6 py-3 space-y-3">
           <Link
@@ -90,7 +97,7 @@ export default function Navbar() {
             Search
           </Link>
           <Link
-            to="/add-ride"
+            to="/publish-ride"
             className="flex items-center text-blue-500 font-medium hover:text-blue-600"
             onClick={() => setIsMenuOpen(false)}
           >

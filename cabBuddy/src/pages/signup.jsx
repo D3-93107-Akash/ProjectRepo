@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -22,7 +22,7 @@ export default function Signup() {
     }
 
     localStorage.setItem("token", "dummy-token");
-    navigate("/dashboard");
+    navigate("/");
   }
 
   return (
@@ -117,9 +117,9 @@ export default function Signup() {
           {/* LOGIN LINK */}
           <p className="text-center text-sm text-gray-600">
             Already have an account?{" "}
-            <span className="text-blue-600 hover:underline cursor-pointer">
+            <Link to="/login" className="text-blue-600 hover:underline cursor-pointer">
               Login
-            </span>
+            </Link>
           </p>
 
         </CardContent>
