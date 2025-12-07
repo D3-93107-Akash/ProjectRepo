@@ -7,15 +7,16 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Card, CardContent } from "@/components/ui/card";
 
-export default function Login() {
+export default function Signup() {
   const navigate = useNavigate();
+  const [fullname, setFullname] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  function handleLogin(e) {
+  function handleSignup(e) {
     e.preventDefault();
 
-    if (!email || !password) {
+    if (!fullname || !email || !password) {
       alert("Please fill all fields");
       return;
     }
@@ -33,19 +34,29 @@ export default function Login() {
           {/* TOP HEADING */}
           <div className="text-center space-y-1">
             <h1 className="text-2xl font-bold text-gray-900">
-              Welcome back 👋
+              Create an account ✨
             </h1>
             <p className="text-gray-500">
-              Login to your CabBuddy account
+              Sign up to continue with CabBuddy
             </p>
           </div>
 
           {/* FORM */}
-          <form className="space-y-4" onSubmit={handleLogin}>
+          <form className="space-y-4" onSubmit={handleSignup}>
             <div className="space-y-1">
-              <Label htmlFor="email" className="text-gray-700">Email</Label>
+              <Label className="text-gray-700">Full Name</Label>
               <Input
-                id="email"
+                type="text"
+                placeholder="John Doe"
+                value={fullname}
+                onChange={(e) => setFullname(e.target.value)}
+                className="rounded-lg"
+              />
+            </div>
+
+            <div className="space-y-1">
+              <Label className="text-gray-700">Email</Label>
+              <Input
                 type="email"
                 placeholder="you@example.com"
                 value={email}
@@ -55,14 +66,8 @@ export default function Login() {
             </div>
 
             <div className="space-y-1">
-              <div className="flex items-center">
-                <Label htmlFor="password" className="text-gray-700">Password</Label>
-                <a className="ml-auto text-sm text-blue-600 hover:underline cursor-pointer">
-                  Forgot password?
-                </a>
-              </div>
+              <Label className="text-gray-700">Password</Label>
               <Input
-                id="password"
                 type="password"
                 placeholder="•••••••"
                 value={password}
@@ -71,9 +76,8 @@ export default function Login() {
               />
             </div>
 
-            {/* LOGIN BUTTON */}
+            {/* SIGNUP BUTTON (same style as Login button) */}
             <Button
-              type="submit"
               className="
                 w-full h-12 rounded-full 
                 bg-[#4285F4] 
@@ -82,40 +86,39 @@ export default function Login() {
                 flex items-center justify-center gap-3
                 transition
               "
+              type="submit"
             >
-              <span className="text-white font-medium">Login</span>
+              <span className="text-white font-medium">Sign Up</span>
             </Button>
-
           </form>
 
           <Separator />
 
-          {/* SOCIAL LOGIN */}
+          {/* TEXT */}
           <div className="text-center text-sm text-gray-500 mb-2">
             Or continue with
           </div>
 
-          {/* GOOGLE sign up */}
-          <div className="grid grid-cols-1 gap-3">
-            <Button
-              className="
-                w-full h-12 rounded-full 
-                bg-[#4285F4] 
-                hover:bg-[#357AE8] 
-                text-white 
-                flex items-center justify-center gap-3
-                transition
-              "
-            >
-              <span className="text-white font-medium">Sign up with Google</span>
-            </Button>
-          </div>
+          {/* GOOGLE SIGNUP BUTTON (same as login page style) */}
+          <Button
+            className="
+              w-full h-12 rounded-full 
+              bg-[#4285F4] 
+              hover:bg-[#357AE8] 
+              text-white 
+              flex items-center justify-center gap-3
+              transition
+            "
+            type="button"
+          >
+            <span className="text-white font-medium">Sign up with Google</span>
+          </Button>
 
-          {/* SIGNUP LINK */}
+          {/* LOGIN LINK */}
           <p className="text-center text-sm text-gray-600">
-            Don't have an account?{" "}
+            Already have an account?{" "}
             <span className="text-blue-600 hover:underline cursor-pointer">
-              Sign up
+              Login
             </span>
           </p>
 
