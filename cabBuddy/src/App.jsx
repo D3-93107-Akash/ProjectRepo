@@ -7,11 +7,11 @@ import PublishRide from "./pages/AddRide";
 import Payments from "./pages/Payments";
 import PickupPage from "./pages/Pickup";
 import DropoffPage from "./pages/DropOff";
-
+import SelectRoute from "./pages/SelectRoute";
+import Search from "./pages/Search";
+import RequestBooking from "./pages/requestbooking";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"; // keep this once in your app [web:39][web:117]
-import SelectRoute from "./pages/SelectRoute";
-
 function App() {
   return (
     <>
@@ -24,6 +24,8 @@ function App() {
         <Route path="/pickup" element={<PickupPage/>}></Route>
         <Route path="/drop-off" element={<DropoffPage/>}></Route>
         <Route path="/select-route" element={<SelectRoute/>} ></Route>
+        <Route path="/search" element={<Search />} />
+        <Route path="/requestbooking" element={<RequestBooking/>} />
       </Routes>
 
       {/* Toast container at root */}
