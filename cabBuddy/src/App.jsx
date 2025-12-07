@@ -3,7 +3,7 @@ import Navbar from "./components/Navbar";
 import { Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
-import SignupPage from "@/pages/signup";
+import SignupPage from "./pages/signup";
 import PublishRide from "./pages/AddRide";
 import Payments from "./pages/Payments";
 import PickupPage from "./pages/Pickup";
@@ -34,10 +34,6 @@ function App() {
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/publish-ride" element={<PublishRide />} />
         <Route path="/my-payments" element={<Payments />} />
-<<<<<<< HEAD
-        
-        
-=======
         <Route path="/pickup" element={<PickupPage />} />
         <Route path="/drop-off" element={<DropoffPage />} />
         <Route path="/select-route" element={<SelectRoute />} />
@@ -50,7 +46,6 @@ function App() {
         <Route path="/verify/driving-license" element={<DrivingLicenseVerificationPage />} />
         <Route path="/my-bookings" element={<Bookings />} />
         <Route path="/logout" element={<Logout />} />
->>>>>>> origin
       </Routes>
 
       {/* Toast container at root */}
