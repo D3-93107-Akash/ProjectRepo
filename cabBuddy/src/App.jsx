@@ -27,6 +27,10 @@ function App() {
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/publish-ride" element={<PublishRide />} />
         <Route path="/my-payments" element={<Payments />} />
+<<<<<<< HEAD
+        
+        
+=======
         <Route path="/pickup" element={<PickupPage />} />
         <Route path="/drop-off" element={<DropoffPage />} />
         <Route path="/select-route" element={<SelectRoute />} />
@@ -35,6 +39,7 @@ function App() {
         <Route path="/profile" element={<Profile />} />
         <Route path="/my-bookings" element={<Bookings />} />
         <Route path="/logout" element={<Logout />} />
+>>>>>>> origin
       </Routes>
 
       {/* Toast container at root */}

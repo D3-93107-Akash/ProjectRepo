@@ -1,4 +1,4 @@
-// RequestBooking.jsx
+
 import React, { useState } from "react";
 
 export default function RequestBooking() {
@@ -10,7 +10,7 @@ export default function RequestBooking() {
       <div className="w-full max-w-3xl">
         {/* DATE HEADER */}
         <header className="mb-6">
-          <h1 className="text-4xl font-extrabold text-teal-900">
+          <h1 className="text-4xl font-extrabold text-sky-900">
             Monday, 1 December
           </h1>
         </header>
@@ -44,7 +44,7 @@ export default function RequestBooking() {
               <div className="grid grid-cols-[72px_24px_1fr] gap-4 items-start">
                 {/* LEFT: First stop time + duration */}
                 <div className="text-left">
-                  <div className="text-teal-900 font-semibold text-base">
+                  <div className="text-sky-900 font-semibold text-base">
                     03:40
                   </div>
                   <div className="text-xs text-slate-400 mt-1">3h00</div>
@@ -53,7 +53,7 @@ export default function RequestBooking() {
                 {/* MIDDLE: timeline (TOP DOT → LINE) */}
                 <div className="flex flex-col items-center">
                   {/* top dot */}
-                  <div className="w-2.5 h-2.5 rounded-full bg-teal-700 mt-1" />
+                  <div className="w-2.5 h-2.5 rounded-full bg-sky-700 mt-1" />
 
                   {/* slightly darker vertical line (no bottom dot here) */}
                   <div
@@ -64,9 +64,7 @@ export default function RequestBooking() {
 
                 {/* RIGHT: First stop details */}
                 <div className="pl-1">
-                  <div className="text-teal-900 font-semibold text-lg">
-                    Pune
-                  </div>
+                  <div className="text-sky-900 font-semibold text-lg">Pune</div>
                   <div className="text-sm text-slate-600 mt-2">
                     B-WING, SHUBHKALYAN APARTMENT, B-2103, Nanded City Sinhgad
                     Rd, Nanded, Maharashtra
@@ -81,7 +79,7 @@ export default function RequestBooking() {
               <div className="grid grid-cols-[72px_24px_1fr] gap-4 items-start mt-2">
                 {/* LEFT: second stop time + (empty duration place) */}
                 <div className="text-left">
-                  <div className="text-teal-900 font-semibold text-base">
+                  <div className="text-sky-900 font-semibold text-base">
                     06:40
                   </div>
                   {/* If there's a second duration or ETA, place here; else keep spacing */}
@@ -96,7 +94,7 @@ export default function RequestBooking() {
 
                 {/* RIGHT: second stop details */}
                 <div className="pl-1">
-                  <div className="text-teal-900 font-semibold">Mumbai</div>
+                  <div className="text-sky-900 font-semibold">Mumbai</div>
                   <div className="text-sm text-slate-500 mt-1">
                     5 Marg Gk, Lower Parel, Maharashtra
                   </div>
@@ -139,9 +137,7 @@ export default function RequestBooking() {
                 </div>
 
                 <div>
-                  <div className="text-teal-900 font-semibold text-lg">
-                    Shree
-                  </div>
+                  <div className="text-sky-900 font-semibold text-lg">Shree</div>
                   <div className="text-sm text-slate-500 mt-1">
                     ★ 4.8/5 - 186 ratings
                   </div>
@@ -152,13 +148,12 @@ export default function RequestBooking() {
               <div className="mt-1 space-y-3">
                 <div className="flex items-center gap-3">
                   <div className="p-2 rounded-full bg-sky-50">
-                    
-
+                    {/* Verified shield (blue theme) */}
                     <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden>
                       <path
                         d="M12 2.2l7 3.2v4.1c0 4.3-2.9 8.1-7 9.7-4.1-1.6-7-5.4-7-9.7V5.4l7-3.2z"
-                        fill="#06B6D4" /* bright teal/blue fill */
-                        stroke="#04A3BF" /* subtle darker stroke for definition */
+                        fill="#E0F2FE" /* light sky */
+                        stroke="#0284C7" /* sky-600 */
                         strokeWidth="0.6"
                         strokeLinejoin="round"
                       />
@@ -177,52 +172,41 @@ export default function RequestBooking() {
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-full bg-emerald-50">
-                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden>
-  {/* <!-- Calendar outline --> */}
-  <rect
-    x="3"
-    y="5"
-    width="18"
-    height="16"
-    rx="2.2"
-    stroke="#10b981"
-    strokeWidth="1.5"
-  />
+                  <div className="p-2 rounded-full bg-sky-50">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden>
+                      {/* Calendar outline (blue theme) */}
+                      <rect
+                        x="3"
+                        y="5"
+                        width="18"
+                        height="16"
+                        rx="2.2"
+                        stroke="#0284C7"
+                        strokeWidth="1.5"
+                      />
 
-  {/* <!-- Top rings --> */}
-  <path
-    d="M7 3v4M17 3v4"
-    stroke="#10b981"
-    strokeWidth="1.5"
-    strokeLinecap="round"
-  />
+                      {/* Top rings */}
+                      <path
+                        d="M7 3v4M17 3v4"
+                        stroke="#0284C7"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                      />
 
-  {/* <!-- Dots inside calendar --> */}
-  <circle cx="9" cy="11" r="1" fill="#10b981" />
-  <circle cx="13" cy="11" r="1" fill="#10b981" />
-  <circle cx="17" cy="11" r="1" fill="#10b981" />
+                      {/* Dots inside calendar */}
+                      <circle cx="9" cy="11" r="1" fill="#0284C7" />
+                      <circle cx="13" cy="11" r="1" fill="#0284C7" />
+                      <circle cx="17" cy="11" r="1" fill="#0284C7" />
 
-  {/* <!-- Centered checkmark --> */}
-  <path
-    d="M10.5 15.5l2 2 3.5-3.5"
-    stroke="#10b981"
-    strokeWidth="1.7"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  />
-</svg>
-
-
-                    {/* <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden></svg> */}
-
-
-
-
-
-
-
-
+                      {/* Centered checkmark */}
+                      <path
+                        d="M10.5 15.5l2 2 3.5-3.5"
+                        stroke="#0284C7"
+                        strokeWidth="1.7"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
                   </div>
                   <div className="text-sm text-slate-700">
                     Rarely cancels rides
@@ -344,12 +328,12 @@ export default function RequestBooking() {
             <div className="flex items-center justify-between">
               <div>
                 <div className="text-slate-500 text-sm">Seats available</div>
-                <div className="text-teal-900 font-semibold">2 seats</div>
+                <div className="text-sky-900 font-semibold">2 seats</div>
               </div>
 
               <div className="text-right">
                 <div className="text-slate-500 text-sm">Price</div>
-                <div className="text-teal-900 font-semibold">₹ 420</div>
+                <div className="text-sky-900 font-semibold">₹ 420</div>
               </div>
             </div>
 
@@ -358,7 +342,7 @@ export default function RequestBooking() {
             <div className="flex flex-col sm:flex-row gap-3 mt-2">
               <button
                 type="button"
-                className="w-full sm:w-auto flex-1 inline-flex items-center justify-center rounded-lg bg-teal-700 hover:bg-teal-800 text-white px-5 py-3 font-medium shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-200"
+                className="w-full sm:w-auto flex-1 inline-flex items-center justify-center rounded-lg bg-sky-600 hover:bg-sky-700 text-white px-5 py-3 font-medium shadow-sm focus:outline-none focus:ring-2 focus:ring-sky-200"
                 onClick={() => {
                   // booking action here — replace with your action
                   alert("Booking request sent (replace with real action).");
