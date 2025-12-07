@@ -24,7 +24,7 @@ export default function Search() {
         <div className="flex-1">
 
           {/* CLICKABLE RIDE CARD */}
-          <Link to="/requestbooking.jsx" className="block">
+          <Link to="/requestbooking" className="block">
             <AvailableRideCard
               startTime="11:00"
               duration="3h00"
