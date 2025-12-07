@@ -97,7 +97,7 @@ export default function Navbar() {
             Search
           </Link>
           <Link
-            to="/add-ride"
+            to="/publish-ride"
             className="flex items-center text-blue-500 font-medium hover:text-blue-600"
             onClick={() => setIsMenuOpen(false)}
           >
