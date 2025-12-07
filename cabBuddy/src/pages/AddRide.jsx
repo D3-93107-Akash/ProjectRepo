@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
-import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
 export default function PublishRide() {
@@ -40,19 +39,6 @@ export default function PublishRide() {
   const handleBlur = () => {
     if (value === "" || value < 1) setValue(1);
     if (value > 8) setValue(8);
-  };
-
-  const handlePublish = () => {
-   if(fromCity!="" && toCity!=""){
-    toast.success(
-      `Ride published from ${fromCity} to ${toCity} for ${value || 0} passengers on ${date.toDateString()}`
-    );
-   }
-   else{
-    toast.warn(
-      `Please fill all the fields!!`
-    );
-   }
   };
 
   return (
