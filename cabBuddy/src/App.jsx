@@ -9,6 +9,13 @@ import Payments from "./pages/Payments";
 import Search from "./pages/Search";
 import RequestBooking from "./pages/requestbooking";
 import Profile from "./pages/Profile";
+import PhoneVerificationPage from "./components/profile/PhoneVerificationPage";
+import EmailVerificationPage from "./components/profile/EmailVerificationPage";
+import GovtIdVerificationPage from "./components/profile/GovtIdVerificationPage";
+import DrivingLicenseVerificationPage from "./components/profile/DrivingLicenseVerificationPage";
+
+
+
 import Bookings from "./pages/Bookings";
 import Logout from "./pages/Logout";
 
@@ -25,6 +32,10 @@ function App() {
         <Route path="/search" element={<Search />} />
         <Route path="/requestbooking" element={<RequestBooking />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/verify/phone" element={<PhoneVerificationPage />} />
+        <Route path="/verify/email" element={<EmailVerificationPage />} />
+        <Route path="/verify/govt-id" element={<GovtIdVerificationPage />} />
+        <Route path="/verify/driving-license" element={<DrivingLicenseVerificationPage />} />
         <Route path="/my-bookings" element={<Bookings />} />
         <Route path="/logout" element={<Logout />} />
       </Routes>
