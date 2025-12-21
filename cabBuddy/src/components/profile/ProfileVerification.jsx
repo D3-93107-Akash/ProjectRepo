@@ -14,10 +14,11 @@ export default function ProfileVerification({ user }) {
       </p>
 
       <div className="space-y-1">
+
         <VerificationRow
           label="Mobile number"
           value={user?.phone || "Not added"}
-          verified={!!v.phone}
+          verified={v.phone}
           actionLabel="Verify phone"
           actionRoute="/verify/phone"
         />
@@ -25,7 +26,7 @@ export default function ProfileVerification({ user }) {
         <VerificationRow
           label="Email address"
           value={user?.email || "Not added"}
-          verified={!!v.email}
+          verified={v.email}
           actionLabel="Verify email"
           actionRoute="/verify/email"
         />
@@ -33,7 +34,7 @@ export default function ProfileVerification({ user }) {
         <VerificationRow
           label="Government ID"
           value={v.govtId ? "Uploaded" : "Not uploaded"}
-          verified={!!v.govtId}
+          verified={v.govtId}
           actionLabel="Upload ID"
           actionRoute="/verify/govt-id"
         />
@@ -41,10 +42,11 @@ export default function ProfileVerification({ user }) {
         <VerificationRow
           label="Driving license"
           value={v.drivingLicense ? "Added" : "Not added"}
-          verified={!!v.drivingLicense}
+          verified={v.drivingLicense}
           actionLabel="Add license"
           actionRoute="/verify/driving-license"
         />
+
       </div>
     </Card>
   );
