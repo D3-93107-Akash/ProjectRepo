@@ -25,15 +25,9 @@ public class Vehicle extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
     private String vehicleNumber;
-
-    @Column(nullable = false)
     private String model;
-
-    @Column(nullable = false)
-    private String type; // Car, Bike, Auto
-
+    private String type; // Car, Bike
     private int capacity;
 
     @OneToOne
