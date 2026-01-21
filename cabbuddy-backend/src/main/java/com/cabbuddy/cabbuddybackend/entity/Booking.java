@@ -1,6 +1,7 @@
 package com.cabbuddy.cabbuddybackend.entity;
 
 import com.cabbuddy.cabbuddybackend.enums.BookingStatus;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -31,7 +32,7 @@ public class Booking extends BaseEntity {
     private int seatsBooked;
 
     @Enumerated(EnumType.STRING)
-    private BookingStatus status; // CONFIRMED, CANCELLED
+    private BookingStatus status;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
@@ -41,4 +42,3 @@ public class Booking extends BaseEntity {
     @JoinColumn(name = "ride_id", nullable = false)
     private Ride ride;
 }
-

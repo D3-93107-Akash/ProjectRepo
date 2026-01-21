@@ -5,6 +5,8 @@ import java.time.LocalTime;
 import java.util.List;
 
 import com.cabbuddy.cabbuddybackend.enums.RideStatus;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -35,24 +37,18 @@ public class Ride extends BaseEntity {
     private Long id;
 
     private String source;
-
     private String destination;
 
     private LocalDate rideDate;
-
     private LocalTime rideTime;
 
     private int availableSeats;
-
     private double pricePerSeat;
 
     @Enumerated(EnumType.STRING)
-    private RideStatus status; // ACTIVE, CANCELLED, COMPLETED
+    private RideStatus status;
 
     @ManyToOne
     @JoinColumn(name = "driver_id", nullable = false)
     private User driver;
-
-    @OneToMany(mappedBy = "ride", cascade = CascadeType.ALL)
-    private List<Booking> bookings;
 }

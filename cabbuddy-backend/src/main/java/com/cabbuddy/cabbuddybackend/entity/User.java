@@ -1,6 +1,5 @@
 package com.cabbuddy.cabbuddybackend.entity;
 
-import java.util.List;
 
 import com.cabbuddy.cabbuddybackend.enums.UserRole;
 
@@ -11,17 +10,13 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-
-//Test
-
-@Entity 
+@Entity
 @Table(name = "users")
 @Getter
 @Setter
@@ -33,26 +28,15 @@ public class User extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false, unique = true)
+    @Column(unique = true, nullable = false)
     private String email;
 
-    @Column(nullable = false)
     private String password;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private UserRole role;   // USER, DRIVER, ADMIN
+    private UserRole role;
 
-    @Column(length = 10)
     private String phone;
-
-    @OneToMany(mappedBy = "driver")
-    private List<Ride> rides;    // Driver publishes rides
-
-    @OneToMany(mappedBy = "user")
-    private List<Booking> bookings;
 }
-
