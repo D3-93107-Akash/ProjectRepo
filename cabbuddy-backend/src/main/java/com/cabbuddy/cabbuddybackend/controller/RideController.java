@@ -7,11 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import com.cabbuddy.cabbuddybackend.dto.RideCreateRequest;
-import com.cabbuddy.cabbuddybackend.dto.RideCreateResponse;
-import com.cabbuddy.cabbuddybackend.enums.RideStatus;
 import com.cabbuddy.cabbuddybackend.service.RideService;
 
 import jakarta.validation.Valid;
