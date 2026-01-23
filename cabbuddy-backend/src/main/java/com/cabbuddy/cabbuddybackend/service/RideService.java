@@ -6,18 +6,36 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.cabbuddy.cabbuddybackend.dto.request.RideCreateRequest;
+import com.cabbuddy.cabbuddybackend.dto.RideCreateRequest;
+import com.cabbuddy.cabbuddybackend.dto.RideCreateResponse;
 import com.cabbuddy.cabbuddybackend.entity.Ride;
+import com.cabbuddy.cabbuddybackend.entity.User;
+import com.cabbuddy.cabbuddybackend.enums.RideStatus;
 import com.cabbuddy.cabbuddybackend.repository.RideRepository;
 
 
 
 public interface RideService {
 
+	  RideCreateResponse createRide(RideCreateRequest request);
 
-	public Ride createRide(RideCreateRequest request);
-	public List<Ride> searchRide(String source, String destination, LocalDate date);
-	public void cancelRide(Long rideId);
+	    List<RideCreateResponse> searchRides(
+	            String source,
+	            String destination,
+	            LocalDate rideDate
+	    );
+
+	    RideCreateResponse cancelRide(Long rideId);
+	    
+	    RideCreateResponse getRideById(Long rideId);
+	    
+	    List<RideCreateResponse> getRidesByDriverId(Long driverId);
+	    
+	    List<RideCreateResponse> getRidesByStatus(RideStatus status);
+
+	    
+	 
+
 	
 	
 

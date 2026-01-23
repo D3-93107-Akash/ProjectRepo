@@ -4,39 +4,75 @@ import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import com.cabbuddy.cabbuddybackend.dto.request.RideCreateRequest;
-import com.cabbuddy.cabbuddybackend.entity.Ride;
+import com.cabbuddy.cabbuddybackend.dto.RideCreateRequest;
+import com.cabbuddy.cabbuddybackend.dto.RideCreateResponse;
+import com.cabbuddy.cabbuddybackend.enums.RideStatus;
 import com.cabbuddy.cabbuddybackend.service.RideService;
 
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/rides")
 public class RideController {
-	
-	@Autowired
-	private RideService rideService;
-	
-	@GetMapping("/rides")
-	ResponseEntity<List<Ride>> getAllRides(@RequestParam String source,
-			@RequestParam String Destination,@RequestParam LocalDate rideDate){
-		return ResponseEntity.status(HttpStatus.OK).body(rideService.searchRide(source, Destination, rideDate));
-	}
-	
 
-	 @PostMapping("/add-ride")
-	    public ResponseEntity<Ride> addRide(
-	            @org.springframework.web.bind.annotation.RequestBody RideCreateRequest request
-	    ) {
-	        Ride savedRide = rideService.createRide(request);
-	        return ResponseEntity.status(HttpStatus.CREATED).body(savedRide);
-	    }
+    @Autowired
+    private RideService rideService;
 
+    //  Search rides
+    @GetMapping("/search")
+    public ResponseEntity<List<RideCreateResponse>> searchRide(
+            @RequestParam String source,
+            @RequestParam String destination,
+            @RequestParam
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+
+        return ResponseEntity.ok(
+                rideService.searchRides(source, destination, date)
+        );
+    }
+
+    // Create ride
+    @PostMapping
+    public ResponseEntity<RideCreateResponse> createRide(
+            @Valid @RequestBody RideCreateRequest newride) {
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(rideService.createRide(newride));
+    }
+
+    //  Cancel ride
+    @PutMapping("/{id}/cancel")
+    public ResponseEntity<RideCreateResponse> cancelRide(@PathVariable Long id) {
+
+        return ResponseEntity.ok(rideService.cancelRide(id));
+    }
+
+    //  Get ride by ID
+    @GetMapping("/{id}")
+    public ResponseEntity<RideCreateResponse> getRideById(@PathVariable Long id) {
+
+        return ResponseEntity.ok(rideService.getRideById(id));
+    }
+    
+    @GetMapping("/driver/{driverId}")
+    public ResponseEntity<List<RideCreateResponse>> getRidesByDriver(@PathVariable Long driverId) {
+        List<RideCreateResponse> rides = rideService.getRidesByDriverId(driverId);
+        return ResponseEntity.ok(rides);
+    }
+    
+    @GetMapping("/status")
+    public ResponseEntity<List<RideCreateResponse>> getRidesByStatus(
+            @RequestParam(required = false) RideStatus status) {
+
+        List<RideCreateResponse> rides = rideService.getRidesByStatus(status);
+        return ResponseEntity.ok(rides);
+    }
+    
+    
+    
 }
