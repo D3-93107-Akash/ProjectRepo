@@ -1,17 +1,7 @@
 package com.cabbuddy.cabbuddybackend.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.persistence.*;
+import lombok.*;
 
 @Entity
 @Table(name = "vehicles")
@@ -25,11 +15,17 @@ public class Vehicle extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String vehicleNumber;
+
     private String model;
-    private String type; // Car, Bike
+
+    // Field name kept as 'type' to match common naming
+    private String type; 
+
     private int capacity;
 
+    // Establishing a 1-to-1 relationship with the User (Driver)
     @OneToOne
     @JoinColumn(name = "driver_id", nullable = false)
     private User driver;
