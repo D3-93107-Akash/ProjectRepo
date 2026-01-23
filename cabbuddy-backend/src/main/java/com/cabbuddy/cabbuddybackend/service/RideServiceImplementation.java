@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.cabbuddy.cabbuddybackend.dto.request.RideCreateRequest;
+import com.cabbuddy.cabbuddybackend.dto.RideCreateRequest;
 import com.cabbuddy.cabbuddybackend.entity.Ride;
 import com.cabbuddy.cabbuddybackend.entity.User;
 import com.cabbuddy.cabbuddybackend.enums.RideStatus;

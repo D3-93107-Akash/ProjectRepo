@@ -1,4 +1,4 @@
-package com.cabbuddy.cabbuddybackend.dto.request;
+package com.cabbuddy.cabbuddybackend.dto;
 
 import java.time.LocalDate;
 import java.time.LocalTime;

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.cabbuddy.cabbuddybackend.dto.request.RideCreateRequest;
+import com.cabbuddy.cabbuddybackend.dto.RideCreateRequest;
 import com.cabbuddy.cabbuddybackend.entity.Ride;
 import com.cabbuddy.cabbuddybackend.service.RideService;
 
