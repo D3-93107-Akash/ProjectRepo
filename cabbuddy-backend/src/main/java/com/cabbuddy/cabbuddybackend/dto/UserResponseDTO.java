@@ -1,42 +1,21 @@
-package com.cabbuddy.cabbuddybackend.entity;
+package com.cabbuddy.cabbuddybackend.dto;
 
-import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
-@Entity                  // This class becomes a DB table
-@Table(name = "users")   // Table name
-public class User {
+/*
+ This DTO is used to send data back to frontend
+ Sensitive fields like password are NOT included
+*/
+public class UserResponseDTO {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    // Primary key (auto increment)
     private Long id;
-
-    // User full name
     private String name;
-
-    @Column(unique = true, nullable = false)
-    // Email must be unique
     private String email;
-
-    // User password
-    private String password;
-
-    // Phone number
     private String phone;
-
-    // USER / DRIVER / ADMIN
     private String role;
-
-    // Account creation time
     private LocalDateTime createdAt;
 
-    // Constructor (runs automatically)
-    public User() {
-        this.createdAt = LocalDateTime.now();
-    }
-
-    // Getters and Setters (required by Spring)
+    // Getters & Setters
 
     public Long getId() {
         return id;
@@ -49,7 +28,7 @@ public class User {
     public String getName() {
         return name;
     }
-
+    
     public void setName(String name) {
         this.name = name;
     }
@@ -60,14 +39,6 @@ public class User {
     
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-    
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public String getPhone() {
@@ -88,5 +59,9 @@ public class User {
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
+    }
+    
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 }
