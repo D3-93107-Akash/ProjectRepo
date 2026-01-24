@@ -18,7 +18,10 @@ public class SecurityConfig {
             // Permit all ride-related endpoints and Swagger
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
-                    "/api/rides/**",          // ✅ Allow all ride APIs
+                    "/api/rides/**", 
+                    "/api/vehicles/**",
+                    "/api/users/**",
+                    "/api/bookings/**",
                     "/swagger-ui/**",
                     "/v3/api-docs/**"
                 ).permitAll()
