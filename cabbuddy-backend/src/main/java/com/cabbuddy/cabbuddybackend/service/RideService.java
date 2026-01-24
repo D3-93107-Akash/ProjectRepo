@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.cabbuddy.cabbuddybackend.dto.RideCreateRequest;
-
+import com.cabbuddy.cabbuddybackend.dto.RideCreateResponse;
 import com.cabbuddy.cabbuddybackend.entity.Ride;
 import com.cabbuddy.cabbuddybackend.entity.User;
 import com.cabbuddy.cabbuddybackend.enums.RideStatus;
