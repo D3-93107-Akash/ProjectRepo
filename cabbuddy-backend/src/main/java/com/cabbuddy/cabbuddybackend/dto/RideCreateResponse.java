@@ -1,6 +1,5 @@
 package com.cabbuddy.cabbuddybackend.dto;
 
-
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -17,7 +16,13 @@ public class RideCreateResponse {
     private String source;
     private String destination;
     private LocalDate rideDate;
-    private LocalTime rideTime;
+    
+    // Departure time (pickup time) - REPLACES rideTime
+    private LocalTime departureTime;
+    
+    // Arrival time (drop-off time)
+    private LocalTime arrivalTime;
+    
     private int availableSeats;
     private double pricePerSeat;
     private RideStatus status;

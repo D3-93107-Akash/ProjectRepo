@@ -47,7 +47,6 @@ public class RideServiceImplementation implements RideService {
                 );
 
         // TODO: Re-enable role check after implementing proper authentication
-        // Temporarily allowing any user to create rides for testing
         // if (driver.getRole() != UserRole.DRIVER) {
         //     throw new ResponseStatusException(
         //             HttpStatus.FORBIDDEN,
@@ -59,7 +58,11 @@ public class RideServiceImplementation implements RideService {
         ride.setSource(request.getSource());
         ride.setDestination(request.getDestination());
         ride.setRideDate(request.getRideDate());
-        ride.setRideTime(request.getRideTime());
+        
+        // Use departureTime and arrivalTime
+        ride.setDepartureTime(request.getDepartureTime());
+        ride.setArrivalTime(request.getArrivalTime());
+        
         ride.setAvailableSeats(request.getAvailableSeats());
         ride.setPricePerSeat(request.getPricePerSeat());
         ride.setStatus(RideStatus.ACTIVE);
@@ -143,7 +146,11 @@ public class RideServiceImplementation implements RideService {
         response.setSource(ride.getSource());
         response.setDestination(ride.getDestination());
         response.setRideDate(ride.getRideDate());
-        response.setRideTime(ride.getRideTime());
+        
+        // UPDATED: Map new time fields
+        response.setDepartureTime(ride.getDepartureTime());
+        response.setArrivalTime(ride.getArrivalTime());
+        
         response.setAvailableSeats(ride.getAvailableSeats());
         response.setPricePerSeat(ride.getPricePerSeat());
         response.setStatus(ride.getStatus());

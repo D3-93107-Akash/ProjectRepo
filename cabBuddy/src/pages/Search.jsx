@@ -46,23 +46,23 @@ export default function Search() {
     console.log("🔍 Search params changed:", Object.fromEntries(searchParams));
   }, [searchParams]);
 
-  // Calculate time filter counts
+  // ✅ UPDATED: Calculate time filter counts using departureTime
   const timeCounts = useMemo(() => {
     const before06 = allRides.filter(ride => {
-      if (!ride.rideTime) return false;
-      const hour = parseInt(ride.rideTime.split(":")[0]);
+      if (!ride.departureTime) return false;
+      const hour = parseInt(ride.departureTime.split(":")[0]);
       return hour < 6;
     }).length;
 
     const sixTo12 = allRides.filter(ride => {
-      if (!ride.rideTime) return false;
-      const hour = parseInt(ride.rideTime.split(":")[0]);
+      if (!ride.departureTime) return false;
+      const hour = parseInt(ride.departureTime.split(":")[0]);
       return hour >= 6 && hour < 12;
     }).length;
 
     const twelveTo18 = allRides.filter(ride => {
-      if (!ride.rideTime) return false;
-      const hour = parseInt(ride.rideTime.split(":")[0]);
+      if (!ride.departureTime) return false;
+      const hour = parseInt(ride.departureTime.split(":")[0]);
       return hour >= 12 && hour < 18;
     }).length;
 
@@ -143,12 +143,12 @@ export default function Search() {
       console.log("Filtered rides count:", rides.length);
     }
 
-    // Apply time filters
+    // ✅ UPDATED: Apply time filters using departureTime
     const activeTimeFilters = Object.entries(timeFilters).filter(([_, active]) => active);
     if (activeTimeFilters.length > 0) {
       rides = rides.filter(ride => {
-        if (!ride.rideTime) return false;
-        const hour = parseInt(ride.rideTime.split(":")[0]);
+        if (!ride.departureTime) return false;
+        const hour = parseInt(ride.departureTime.split(":")[0]);
 
         return activeTimeFilters.some(([key]) => {
           if (key === "before06") return hour < 6;
@@ -175,12 +175,12 @@ export default function Search() {
       rides = rides.filter(ride => (ride.availableSeats || 0) >= seats);
     }
 
-    // Apply sorting - FIXED ✅ (keeping for SearchFilters compatibility)
+    // Apply sorting - ✅ UPDATED: Use departureTime for earliest sorting
     if (sortBy) {
       rides.sort((a, b) => {
         switch (sortBy) {
           case "earliest":
-            return (a.rideTime || "99:99").localeCompare(b.rideTime || "99:99");
+            return (a.departureTime || "99:99").localeCompare(b.departureTime || "99:99");
           case "lowest_price":
             return (a.pricePerSeat || 0) - (b.pricePerSeat || 0);
           case "highest_price":
@@ -196,21 +196,13 @@ export default function Search() {
     return rides;
   }, [allRides, searchParams, timeFilters, minPrice, maxPrice, minSeats, sortBy]);
 
-  // Format time for display (HH:mm:ss -> HH:mm)
+  // ✅ UPDATED: Format departureTime for display (HH:mm:ss -> HH:mm)
   const formatTime = (timeString) => {
     if (!timeString) return "00:00";
     return timeString.substring(0, 5);
   };
 
-  // Calculate end time (add 3 hours as default duration)
-  const calculateEndTime = (startTime) => {
-    if (!startTime) return "00:00";
-    const [hours, minutes] = startTime.split(":").map(Number);
-    const endHours = (hours + 3) % 24;
-    return `${endHours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`;
-  };
-
-  // Handle SearchBox form submission - FIXED ✅
+  // Handle SearchBox form submission
   const handleSearchSubmit = (e) => {
     e.preventDefault();
     const source = sourceRef.current?.value?.trim();
@@ -222,7 +214,7 @@ export default function Search() {
     if (destination) params.set("destination", destination);
     if (date) params.set("date", date);
 
-    const queryString = params.toString();  // ✅ Fixed: properly defined
+    const queryString = params.toString();
     navigate(`/search?${queryString}`);
   };
 
@@ -256,7 +248,7 @@ export default function Search() {
           </p>
         </div>
 
-        {/* Search Box Section - Fully Functional */}
+        {/* Search Box Section */}
         <div className="mb-10">
           <form onSubmit={handleSearchSubmit} className="bg-white rounded-2xl shadow-lg p-6 border border-gray-200">
             <div className="max-w-2xl mx-auto">
@@ -377,9 +369,9 @@ export default function Search() {
             </div>
           </div>
 
-          {/* Rides List - SORT BY BOX REMOVED */}
+          {/* Rides List */}
           <div className="flex-1">
-            {/* Results Header - SIMPLIFIED (NO SORT BOX) */}
+            {/* Results Header */}
             <div className="mb-6">
               <div>
                 <h2 className="text-2xl md:text-3xl font-bold text-gray-900">
@@ -457,12 +449,13 @@ export default function Search() {
               </div>
             )}
 
-            {/* Rides List */}
+            {/* ✅ UPDATED: Rides List - Using departureTime & arrivalTime */}
             {!loading && filteredRides.length > 0 && (
               <div className="space-y-5">
                 {filteredRides.map((ride, index) => {
-                  const startTime = formatTime(ride.rideTime);
-                  const endTime = calculateEndTime(ride.rideTime);
+                  const startTime = formatTime(ride.departureTime);     // ✅ CHANGED
+                  const endTime = formatTime(ride.arrivalTime);          // ✅ CHANGED
+                  const availableSeats = ride.availableSeats || 0;
                   
                   return (
                     <Link
@@ -476,12 +469,13 @@ export default function Search() {
                     >
                       <AvailableRideCard
                         startTime={startTime}
-                        duration="3h 00m"
+                        duration="3h 00m"  // ✅ TODO: Calculate from departureTime -> arrivalTime
                         endTime={endTime}
                         from={ride.source}
                         to={ride.destination}
                         price={ride.pricePerSeat}
                         rideDate={ride.rideDate}
+                        availableSeats={availableSeats}
                         driver={{
                           name: ride.driverName || "Driver",
                           avatar: "/images/default.jpg",

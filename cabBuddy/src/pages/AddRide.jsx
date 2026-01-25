@@ -17,13 +17,56 @@ export default function PublishRide() {
   const navigate = useNavigate();
 
   const [date, setDate] = useState(new Date());
-  const [time, setTime] = useState("10:00");
+  const [departureTime, setDepartureTime] = useState("10:00");  // ✅ CHANGED: departureTime
+  const [arrivalTime, setArrivalTime] = useState("13:00");      // ✅ NEW: arrivalTime
   const [fromCity, setFromCity] = useState("");
   const [toCity, setToCity] = useState("");
   const [seats, setSeats] = useState(2);
-  const [price, setPrice] = useState(100);
+  const [price, setPrice] = useState("");
   const [loading, setLoading] = useState(false);
-  const [driverId, setDriverId] = useState(1); // Default driver ID
+  const [driverId, setDriverId] = useState(1);
+
+  // ✅ FIXED: Price input handler
+  const handlePriceChange = (e) => {
+    const inputValue = e.target.value;
+    
+    if (inputValue === "") {
+      setPrice("");
+      return;
+    }
+
+    if (/^\d*\.?\d{0,2}$/.test(inputValue)) {
+      const numValue = parseFloat(inputValue);
+      if (numValue >= 1 && numValue <= 5000) {
+        setPrice(inputValue);
+      } else if (numValue < 1) {
+        setPrice("1");
+      }
+    }
+  };
+
+  // ✅ NEW: Auto-calculate arrival time based on departure + 3 hours (default)
+  const calculateArrivalTime = (departure) => {
+    try {
+      const [hours, minutes] = departure.split(":");
+      const departureDate = new Date();
+      departureDate.setHours(parseInt(hours), parseInt(minutes), 0, 0);
+      
+      // Add 3 hours (default duration)
+      departureDate.setHours(departureDate.getHours() + 3);
+      
+      const arrivalHours = String(departureDate.getHours()).padStart(2, '0');
+      const arrivalMinutes = String(departureDate.getMinutes()).padStart(2, '0');
+      return `${arrivalHours}:${arrivalMinutes}`;
+    } catch {
+      return "13:00";
+    }
+  };
+
+  // Update arrival time when departure changes
+  useEffect(() => {
+    setArrivalTime(calculateArrivalTime(departureTime));
+  }, [departureTime]);
 
   // Check if driver user exists on mount
   useEffect(() => {
@@ -33,13 +76,9 @@ export default function PublishRide() {
         console.log("Driver user found:", response.data);
       } catch (err) {
         if (err.response?.status === 404 || err.response?.status === 500) {
-          console.warn("Driver user not found. You may need to create a user first.");
-          toast.info("Note: User with ID=1 not found. Creating a default driver user...", {
-            position: "top-right",
-            autoClose: 3000,
-          });
+          console.warn("Driver user not found. Creating default driver...");
+          toast.info("Creating default driver user...", { position: "top-right", autoClose: 3000 });
           
-          // Try to create a default driver user
           try {
             const newUser = await registerUser({
               name: "Default Driver",
@@ -48,10 +87,6 @@ export default function PublishRide() {
               phone: "1234567890"
             });
             setDriverId(newUser.data.id);
-            console.log("Created default user with ID:", newUser.data.id);
-            
-            // Update role to DRIVER if possible (requires backend support)
-            // For now, the role check is disabled, so this is optional
           } catch (createErr) {
             console.error("Failed to create default user:", createErr);
           }
@@ -63,163 +98,94 @@ export default function PublishRide() {
   }, [driverId]);
 
   const handlePublish = async () => {
-    // Validate required fields
-    if (!fromCity || !fromCity.trim()) {
-      toast.error("Please enter a source location", {
-        position: "top-right",
-        autoClose: 3000,
-      });
+    const priceNum = parseFloat(price);
+    if (!price || isNaN(priceNum) || priceNum < 1) {
+      toast.error("Please enter a valid price (minimum ₹1)");
       return;
     }
 
-    if (!toCity || !toCity.trim()) {
-      toast.error("Please enter a destination location", {
-        position: "top-right",
-        autoClose: 3000,
-      });
+    if (!fromCity?.trim()) {
+      toast.error("Please enter a source location");
+      return;
+    }
+
+    if (!toCity?.trim()) {
+      toast.error("Please enter a destination location");
       return;
     }
 
     if (fromCity.trim().toLowerCase() === toCity.trim().toLowerCase()) {
-      toast.error("Source and destination cannot be the same", {
-        position: "top-right",
-        autoClose: 3000,
-      });
+      toast.error("Source and destination cannot be the same");
       return;
     }
 
     if (seats < 1 || seats > 8) {
-      toast.error("Seats must be between 1 and 8", {
-        position: "top-right",
-        autoClose: 3000,
-      });
+      toast.error("Seats must be between 1 and 8");
       return;
     }
 
-    if (price < 1) {
-      toast.error("Price must be at least ₹1", {
-        position: "top-right",
-        autoClose: 3000,
-      });
-      return;
-    }
-
-    // Check if date is in the past
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const selectedDate = new Date(date);
     selectedDate.setHours(0, 0, 0, 0);
     
     if (selectedDate < today) {
-      toast.error("Please select a future date", {
-        position: "top-right",
-        autoClose: 3000,
-      });
+      toast.error("Please select a future date");
       return;
     }
 
-    // Format time to HH:mm:ss as required by backend
-    const timeParts = time.split(":");
-    const formattedTime = `${timeParts[0]}:${timeParts[1] || "00"}:00`;
+    // ✅ UPDATED: Format both departureTime and arrivalTime
+    const formatTime = (timeStr) => {
+      const timeParts = timeStr.split(":");
+      return `${timeParts[0]}:${timeParts[1] || "00"}:00`;
+    };
 
     const payload = {
       source: fromCity.trim(),
       destination: toCity.trim(),
-      rideDate: date.toISOString().split("T")[0], // YYYY-MM-DD format
-      rideTime: formattedTime, // HH:mm:ss format
+      rideDate: date.toISOString().split("T")[0],
+      departureTime: formatTime(departureTime),  // ✅ NEW
+      arrivalTime: formatTime(arrivalTime),      // ✅ NEW
       availableSeats: seats,
-      pricePerSeat: price,
-      driverId: driverId // Use the driver ID (defaults to 1, or created user's ID)
+      pricePerSeat: priceNum,
+      driverId: driverId
     };
+
+    console.log("Publishing ride:", payload); // Debug log
 
     setLoading(true);
     try {
       const response = await createRide(payload);
-      toast.success("Ride published successfully! 🚗", {
-        position: "top-right",
-        autoClose: 3000,
-      });
+      toast.success("Ride published successfully! 🚗");
       
       // Reset form
       setFromCity("");
       setToCity("");
       setDate(new Date());
-      setTime("10:00");
+      setDepartureTime("10:00");
+      setArrivalTime("13:00");
       setSeats(2);
-      setPrice(100);
+      setPrice("");
       
-      // Navigate to search page after a short delay
       setTimeout(() => {
         navigate("/search");
       }, 1500);
     } catch (err) {
       console.error("Error publishing ride:", err);
-      console.error("Full error response:", err.response);
-      console.error("Error data:", err.response?.data);
       
       let errorMessage = "Failed to publish ride";
-      
       if (err.response) {
-        // Server responded with error
         const status = err.response.status;
         const data = err.response.data;
         
-        // Log the actual response for debugging
-        console.log("Response status:", status);
-        console.log("Response data:", data);
-        console.log("Response data type:", typeof data);
-        
-        if (status === 403) {
-          // Check if it's the driver role error
-          const dataString = typeof data === 'string' ? data : JSON.stringify(data);
-          
-          if (dataString.includes('Only drivers can create rides')) {
-            errorMessage = "❌ Only users with DRIVER role can create rides.\n\n" +
-              "To fix this:\n" +
-              "1. Create a user with DRIVER role using the registration API\n" +
-              "2. Or update an existing user's role to DRIVER in the database\n" +
-              "3. Then use that user's ID as driverId";
-          } else if (dataString.includes('Driver not found')) {
-            errorMessage = "❌ Driver not found.\n\n" +
-              "User with ID=1 doesn't exist. Please:\n" +
-              "1. Create a user first (via registration)\n" +
-              "2. Update that user's role to DRIVER\n" +
-              "3. Use that user's ID as driverId";
-          } else {
-            errorMessage = `Access forbidden (403). Response: ${dataString}\n\n` +
-              "This might be a CORS issue or the user doesn't have DRIVER role.";
-          }
-        } else if (status === 400) {
-          // Validation errors
-          if (typeof data === 'object' && data !== null) {
-            const validationErrors = Object.entries(data)
-              .map(([field, message]) => `${field}: ${message}`)
-              .join(', ');
-            errorMessage = `Validation error: ${validationErrors}`;
-          } else if (typeof data === 'string') {
-            errorMessage = data;
-          } else {
-            errorMessage = "Invalid request. Please check all fields.";
-          }
-        } else if (status === 404) {
-          errorMessage = "Endpoint not found. Please check the backend URL.";
+        if (status === 400) {
+          errorMessage = data?.message || "Invalid request. Please check all fields.";
         } else if (status === 500) {
           errorMessage = "Server error. Please try again later.";
-        } else {
-          errorMessage = data?.message || data || `Error ${status}: ${err.response.statusText}`;
         }
-      } else if (err.request) {
-        // Request was made but no response received
-        errorMessage = "Cannot connect to server. Please check if the backend is running on http://localhost:8080";
-      } else {
-        // Error setting up request
-        errorMessage = err.message || "An unexpected error occurred";
       }
       
-      toast.error(errorMessage, {
-        position: "top-right",
-        autoClose: 5000,
-      });
+      toast.error(errorMessage, { position: "top-right", autoClose: 5000 });
     } finally {
       setLoading(false);
     }
@@ -239,12 +205,8 @@ export default function PublishRide() {
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 mb-4 shadow-lg">
             <Car className="h-8 w-8 text-white" />
           </div>
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">
-            Publish Your Ride
-          </h1>
-          <p className="text-gray-600 text-lg">
-            Share your journey and earn while you travel
-          </p>
+          <h1 className="text-4xl font-bold text-gray-900 mb-2">Publish Your Ride</h1>
+          <p className="text-gray-600 text-lg">Share your journey and earn while you travel</p>
         </div>
 
         {/* Main Card */}
@@ -260,7 +222,6 @@ export default function PublishRide() {
                   </div>
                   
                   <div className="grid md:grid-cols-2 gap-4">
-                    {/* From Location */}
                     <div className="space-y-2">
                       <Label htmlFor="from" className="text-sm font-medium text-gray-700 flex items-center gap-2">
                         <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center">
@@ -268,19 +229,16 @@ export default function PublishRide() {
                         </div>
                         From
                       </Label>
-                      <div className="relative">
-                        <LocationAutocomplete
-                          id="from"
-                          value={fromCity}
-                          onChange={setFromCity}
-                          onSelect={setFromCity}
-                          placeholder="Enter pickup location"
-                          iconColor="blue"
-                        />
-                      </div>
+                      <LocationAutocomplete
+                        id="from"
+                        value={fromCity}
+                        onChange={setFromCity}
+                        onSelect={setFromCity}
+                        placeholder="Enter pickup location"
+                        iconColor="blue"
+                      />
                     </div>
 
-                    {/* Swap Button */}
                     <div className="hidden md:flex items-end pb-2">
                       <button
                         type="button"
@@ -292,7 +250,6 @@ export default function PublishRide() {
                       </button>
                     </div>
 
-                    {/* To Location */}
                     <div className="space-y-2">
                       <Label htmlFor="to" className="text-sm font-medium text-gray-700 flex items-center gap-2">
                         <div className="w-6 h-6 rounded-full bg-red-100 flex items-center justify-center">
@@ -300,20 +257,17 @@ export default function PublishRide() {
                         </div>
                         To
                       </Label>
-                      <div className="relative">
-                        <LocationAutocomplete
-                          id="to"
-                          value={toCity}
-                          onChange={setToCity}
-                          onSelect={setToCity}
-                          placeholder="Enter destination"
-                          iconColor="red"
-                        />
-                      </div>
+                      <LocationAutocomplete
+                        id="to"
+                        value={toCity}
+                        onChange={setToCity}
+                        onSelect={setToCity}
+                        placeholder="Enter destination"
+                        iconColor="red"
+                      />
                     </div>
                   </div>
 
-                  {/* Mobile Swap Button */}
                   <div className="md:hidden flex justify-center">
                     <button
                       type="button"
@@ -326,8 +280,8 @@ export default function PublishRide() {
                   </div>
                 </div>
 
-                {/* Date and Time */}
-                <div className="grid md:grid-cols-2 gap-4">
+                {/* ✅ UPDATED: Date, Departure Time, Arrival Time */}
+                <div className="grid md:grid-cols-3 gap-4">
                   <div className="space-y-2">
                     <Label className="text-sm font-medium text-gray-700 flex items-center gap-2">
                       <CalendarDays className="h-4 w-4 text-purple-600" />
@@ -348,9 +302,7 @@ export default function PublishRide() {
                         <Calendar
                           mode="single"
                           selected={date}
-                          onSelect={(d) => {
-                            if (d) setDate(d);
-                          }}
+                          onSelect={(d) => { if (d) setDate(d); }}
                           disabled={{ before: new Date() }}
                           initialFocus
                         />
@@ -359,17 +311,33 @@ export default function PublishRide() {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="time" className="text-sm font-medium text-gray-700 flex items-center gap-2">
+                    <Label htmlFor="departureTime" className="text-sm font-medium text-gray-700 flex items-center gap-2">
                       <Clock className="h-4 w-4 text-green-600" />
-                      Time
+                      Departure
                     </Label>
                     <div className="relative">
                       <Input
-                        id="time"
+                        id="departureTime"
                         type="time"
-                        value={time}
-                        onChange={(e) => setTime(e.target.value)}
+                        value={departureTime}
+                        onChange={(e) => setDepartureTime(e.target.value)}
                         className="h-12 bg-white border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="arrivalTime" className="text-sm font-medium text-gray-700 flex items-center gap-2">
+                      <Clock className="h-4 w-4 text-orange-600" />
+                      Arrival (auto)
+                    </Label>
+                    <div className="relative">
+                      <Input
+                        id="arrivalTime"
+                        type="time"
+                        value={arrivalTime}
+                        onChange={(e) => setArrivalTime(e.target.value)}
+                        className="h-12 bg-white border-gray-300 focus:border-blue-500 focus:ring-blue-500 bg-green-50"
                       />
                     </div>
                   </div>
@@ -411,22 +379,18 @@ export default function PublishRide() {
                       <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-600 font-medium">₹</span>
                       <Input
                         id="price"
-                        type="number"
-                        min="1"
-                        step="10"
+                        type="text"
                         value={price}
-                        onChange={(e) => {
-                          const val = parseFloat(e.target.value) || 0;
-                          setPrice(Math.max(1, val));
-                        }}
-                        className="h-12 bg-white border-gray-300 focus:border-blue-500 focus:ring-blue-500 pl-8"
+                        onChange={handlePriceChange}
+                        placeholder="100"
+                        className="h-12 bg-white border-gray-300 focus:border-blue-500 focus:ring-blue-500 pl-8 pr-3"
                       />
                     </div>
-                    <p className="text-xs text-gray-500">Minimum ₹1</p>
+                    <p className="text-xs text-gray-500">Minimum ₹1, up to ₹5000 per seat</p>
                   </div>
                 </div>
 
-                {/* Summary Card */}
+                {/* ✅ UPDATED: Summary Card */}
                 <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-100">
                   <div className="flex items-center gap-2 mb-4">
                     <Sparkles className="h-5 w-5 text-blue-600" />
@@ -435,15 +399,19 @@ export default function PublishRide() {
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between">
                       <span className="text-gray-600">Route:</span>
-                      <span className="font-medium text-gray-900">
-                        {fromCity || "—"} → {toCity || "—"}
-                      </span>
+                      <span className="font-medium text-gray-900">{fromCity || "—"} → {toCity || "—"}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-600">Date & Time:</span>
-                      <span className="font-medium text-gray-900">
-                        {format(date, "dd MMM yyyy")} at {time}
-                      </span>
+                      <span className="text-gray-600">Date:</span>
+                      <span className="font-medium text-gray-900">{format(date, "dd MMM yyyy")}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Departure:</span>
+                      <span className="font-medium text-gray-900">{departureTime}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Arrival:</span>
+                      <span className="font-medium text-gray-900">{arrivalTime}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-gray-600">Seats:</span>
@@ -451,11 +419,13 @@ export default function PublishRide() {
                     </div>
                     <div className="flex justify-between">
                       <span className="text-gray-600">Price per seat:</span>
-                      <span className="font-medium text-gray-900">₹{price}</span>
+                      <span className="font-medium text-gray-900">₹{price || "—"}</span>
                     </div>
                     <div className="pt-2 border-t border-blue-200 flex justify-between">
                       <span className="text-gray-700 font-semibold">Total potential:</span>
-                      <span className="font-bold text-blue-600 text-lg">₹{price * seats}</span>
+                      <span className="font-bold text-blue-600 text-lg">
+                        ₹{(price ? parseFloat(price) * seats : 0).toLocaleString()}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -463,7 +433,7 @@ export default function PublishRide() {
                 {/* Submit Button */}
                 <Button
                   type="submit"
-                  disabled={loading || !fromCity || !toCity}
+                  disabled={loading || !fromCity || !toCity || !price}
                   className="w-full h-14 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold text-lg rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {loading ? (
@@ -486,11 +456,8 @@ export default function PublishRide() {
         {/* Help Text */}
         <div className="mt-6 text-center">
           <p className="text-sm text-gray-600">
-            Need help? Contact our support team or{" "}
-            <button
-              onClick={() => navigate("/search")}
-              className="text-blue-600 hover:text-blue-700 font-medium underline"
-            >
+            Need help? Contact support or{" "}
+            <button onClick={() => navigate("/search")} className="text-blue-600 hover:text-blue-700 font-medium underline">
               browse available rides
             </button>
           </p>

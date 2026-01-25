@@ -11,7 +11,6 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
-
 //getters setters annotation
 @Getter
 @Setter
@@ -27,9 +26,15 @@ public class RideCreateRequest {
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate rideDate;
 
-    @NotNull(message = "Ride time is required")
+    // Departure time (pickup time) - REPLACES rideTime
+    @NotNull(message = "Departure time is required")
     @JsonFormat(pattern = "[HH:mm:ss][HH:mm]")
-    private LocalTime rideTime;
+    private LocalTime departureTime;
+
+    // Arrival time (drop-off time)
+    @NotNull(message = "Arrival time is required")
+    @JsonFormat(pattern = "[HH:mm:ss][HH:mm]")
+    private LocalTime arrivalTime;
 
     @Min(value = 1, message = "Available seats must be at least 1")
     private int availableSeats;
