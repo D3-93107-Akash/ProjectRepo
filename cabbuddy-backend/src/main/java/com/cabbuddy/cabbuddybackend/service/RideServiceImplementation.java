@@ -2,6 +2,7 @@ package com.cabbuddy.cabbuddybackend.service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -30,39 +31,19 @@ public class RideServiceImplementation implements RideService {
     // ================= CREATE RIDE =================
     @Override
     public RideCreateResponse createRide(RideCreateRequest request) {
-
         if (request.getRideDate().isBefore(LocalDate.now())) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "Ride date cannot be in the past"
-            );
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Ride date cannot be in the past");
         }
 
         User driver = userRepository.findById(request.getDriverId())
-                .orElseThrow(() ->
-                        new ResponseStatusException(
-                                HttpStatus.NOT_FOUND,
-                                "Driver not found"
-                        )
-                );
-
-        // TODO: Re-enable role check after implementing proper authentication
-        // if (driver.getRole() != UserRole.DRIVER) {
-        //     throw new ResponseStatusException(
-        //             HttpStatus.FORBIDDEN,
-        //             "Only drivers can create rides"
-        //     );
-        // }
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Driver not found"));
 
         Ride ride = new Ride();
         ride.setSource(request.getSource());
         ride.setDestination(request.getDestination());
         ride.setRideDate(request.getRideDate());
-        
-        // Use departureTime and arrivalTime
         ride.setDepartureTime(request.getDepartureTime());
         ride.setArrivalTime(request.getArrivalTime());
-        
         ride.setAvailableSeats(request.getAvailableSeats());
         ride.setPricePerSeat(request.getPricePerSeat());
         ride.setStatus(RideStatus.ACTIVE);
@@ -74,83 +55,72 @@ public class RideServiceImplementation implements RideService {
     // ================= SEARCH RIDES =================
     @Override
     public List<RideCreateResponse> searchRides(String source, String destination, LocalDate rideDate) {
-        return rideRepository
-                .findBySourceAndDestinationAndRideDate(source, destination, rideDate)
+        return rideRepository.findBySourceAndDestinationAndRideDate(source, destination, rideDate)
                 .stream()
                 .map(this::mapToResponse)
-                .toList();
+                .collect(Collectors.toList());
     }
 
     // ================= CANCEL RIDE =================
     @Override
     public RideCreateResponse cancelRide(Long rideId) {
-
         Ride ride = rideRepository.findById(rideId)
-                .orElseThrow(() ->
-                        new ResponseStatusException(HttpStatus.NOT_FOUND, "Ride not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Ride not found"));
 
         if (ride.getStatus() == RideStatus.CANCELLED) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "Ride already cancelled"
-            );
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Ride already cancelled");
         }
 
         ride.setStatus(RideStatus.CANCELLED);
-        return mapToResponse(ride);
+        return mapToResponse(rideRepository.save(ride));
     }
 
     // ================= GET RIDE BY ID =================
     @Override
     public RideCreateResponse getRideById(Long rideId) {
-
         Ride ride = rideRepository.findById(rideId)
-                .orElseThrow(() ->
-                        new ResponseStatusException(HttpStatus.NOT_FOUND, "Ride not found"));
-
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Ride not found"));
         return mapToResponse(ride);
     }
 
-    // ================= GET RIDES BY DRIVER =================
+    // ================= GET RIDES BY DRIVER (Long) =================
     @Override
     public List<RideCreateResponse> getRidesByDriverId(Long driverId) {
-
         User driver = userRepository.findById(driverId)
-                .orElseThrow(() ->
-                        new ResponseStatusException(HttpStatus.NOT_FOUND, "Driver not found"));
-
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Driver not found"));
         return rideRepository.findByDriver(driver)
                 .stream()
                 .map(this::mapToResponse)
-                .toList();
+                .collect(Collectors.toList());
+    }
+
+    // ================= GET RIDES BY DRIVER (String) - FOR MY-RIDES ✅
+    @Override
+    public List<RideCreateResponse> getRidesByDriverId(String driverId) {
+        List<Ride> rides = rideRepository.findByDriverIdOrderByRideDateDesc(driverId);
+        return rides.stream()
+                .map(this::mapToResponse)
+                .collect(Collectors.toList());
     }
 
     // ================= GET RIDES BY STATUS =================
     @Override
     public List<RideCreateResponse> getRidesByStatus(RideStatus status) {
-
-        List<Ride> rides = (status == null)
-                ? rideRepository.findAll()
-                : rideRepository.findByStatus(status);
-
+        List<Ride> rides = (status == null) ? rideRepository.findAll() : rideRepository.findByStatus(status);
         return rides.stream()
                 .map(this::mapToResponse)
-                .toList();
+                .collect(Collectors.toList());
     }
 
-    // ================= COMMON MAPPER =================
+    // ================= MAPPER =================
     private RideCreateResponse mapToResponse(Ride ride) {
-
         RideCreateResponse response = new RideCreateResponse();
         response.setId(ride.getId());
         response.setSource(ride.getSource());
         response.setDestination(ride.getDestination());
         response.setRideDate(ride.getRideDate());
-        
-        // UPDATED: Map new time fields
         response.setDepartureTime(ride.getDepartureTime());
         response.setArrivalTime(ride.getArrivalTime());
-        
         response.setAvailableSeats(ride.getAvailableSeats());
         response.setPricePerSeat(ride.getPricePerSeat());
         response.setStatus(ride.getStatus());
@@ -159,7 +129,6 @@ public class RideServiceImplementation implements RideService {
             response.setDriverId(ride.getDriver().getId());
             response.setDriverName(ride.getDriver().getName());
         }
-
         return response;
     }
 }
