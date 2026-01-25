@@ -4,6 +4,8 @@ import com.cabbuddy.cabbuddybackend.dto.UserRequestDTO;
 import com.cabbuddy.cabbuddybackend.dto.UserResponseDTO;
 import com.cabbuddy.cabbuddybackend.enums.UserRole;
 import com.cabbuddy.cabbuddybackend.service.UserService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,43 +21,43 @@ public class UserController {
         this.userService = userService;
     }
 
-    //  Register
+    // Register
     @PostMapping("/register")
-    public UserResponseDTO register(@RequestBody UserRequestDTO userDTO) {
-        return userService.registerUser(userDTO);
+    public ResponseEntity<UserResponseDTO> register(@RequestBody UserRequestDTO userDTO) {
+        UserResponseDTO createdUser = userService.registerUser(userDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
     }
 
-    //  Get by id
+    // Get by id
     @GetMapping("/{id}")
-    public UserResponseDTO getUser(@PathVariable Long id) {
-        return userService.getUserById(id);
+    public ResponseEntity<UserResponseDTO> getUser(@PathVariable Long id) {
+        return ResponseEntity.ok(userService.getUserById(id));
     }
 
-    //  Get all
+    // Get all
     @GetMapping
-    public List<UserResponseDTO> getAllUsers() {
-        return userService.getAllUsers();
+    public ResponseEntity<List<UserResponseDTO>> getAllUsers() {
+        return ResponseEntity.ok(userService.getAllUsers());
     }
 
-    //  Get by role
+    // Get by role
     @GetMapping("/role/{role}")
-    public List<UserResponseDTO> getUsersByRole(@PathVariable UserRole role) {
-        return userService.getUsersByRole(role);
+    public ResponseEntity<List<UserResponseDTO>> getUsersByRole(@PathVariable UserRole role) {
+        return ResponseEntity.ok(userService.getUsersByRole(role));
     }
 
-    //  Update
+    // Update
     @PutMapping("/{id}")
-    public UserResponseDTO updateUser(
+    public ResponseEntity<UserResponseDTO> updateUser(
             @PathVariable Long id,
             @RequestBody UserRequestDTO userDTO) {
-
-        return userService.updateUser(id, userDTO);
+        return ResponseEntity.ok(userService.updateUser(id, userDTO));
     }
 
-    //  Delete
+    // Delete
     @DeleteMapping("/{id}")
-    public String deleteUser(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
-        return "User deleted successfully";
+        return ResponseEntity.noContent().build();
     }
 }
