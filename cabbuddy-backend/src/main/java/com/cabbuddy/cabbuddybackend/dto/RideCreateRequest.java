@@ -28,7 +28,7 @@ public class RideCreateRequest {
     private LocalDate rideDate;
 
     @NotNull(message = "Ride time is required")
-    @JsonFormat(pattern = "HH:mm:ss")
+    @JsonFormat(pattern = "[HH:mm:ss][HH:mm]")
     private LocalTime rideTime;
 
     @Min(value = 1, message = "Available seats must be at least 1")

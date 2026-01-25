@@ -1,9 +1,56 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import { getRideById } from "@/api/rideApi";
+import { format } from "date-fns";
 
 export default function RequestBooking() {
+  const { id } = useParams();
   const [expanded, setExpanded] = useState(false);
+  const [ride, setRide] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
   const readMore = () => setExpanded((s) => !s);
+
+  useEffect(() => {
+    if (id) {
+      setLoading(true);
+      getRideById(id)
+        .then(res => {
+          setRide(res.data);
+          setLoading(false);
+        })
+        .catch(err => {
+          console.error("Error fetching ride:", err);
+          setError("Failed to load ride details");
+          setLoading(false);
+        });
+    }
+  }, [id]);
+
+  if (loading) {
+    return (
+      <main className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <p className="text-gray-600">Loading ride details...</p>
+      </main>
+    );
+  }
+
+  if (error || !ride) {
+    return (
+      <main className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <p className="text-red-600">{error || "Ride not found"}</p>
+      </main>
+    );
+  }
+
+  // Format date for display
+  const rideDate = ride.rideDate ? new Date(ride.rideDate) : new Date();
+  const formattedDate = format(rideDate, "EEEE, d MMMM");
+
+  // Format time (remove seconds if present)
+  const rideTime = ride.rideTime ? ride.rideTime.substring(0, 5) : "00:00";
 
   return (
     <main className="min-h-screen bg-gray-50 flex items-start justify-center py-10 px-4">
@@ -11,7 +58,7 @@ export default function RequestBooking() {
         {/* DATE HEADER */}
         <header className="mb-6">
           <h1 className="text-4xl font-extrabold text-sky-900">
-            Monday, 1 December
+            {formattedDate}
           </h1>
         </header>
 
@@ -45,9 +92,9 @@ export default function RequestBooking() {
                 {/* LEFT: First stop time + duration */}
                 <div className="text-left">
                   <div className="text-sky-900 font-semibold text-base">
-                    03:40
+                    {rideTime}
                   </div>
-                  <div className="text-xs text-slate-400 mt-1">3h00</div>
+                  <div className="text-xs text-slate-400 mt-1">--</div>
                 </div>
 
                 {/* MIDDLE: timeline (TOP DOT → LINE) */}
@@ -64,10 +111,9 @@ export default function RequestBooking() {
 
                 {/* RIGHT: First stop details */}
                 <div className="pl-1">
-                  <div className="text-sky-900 font-semibold text-lg">Pune</div>
+                  <div className="text-sky-900 font-semibold text-lg">{ride.source}</div>
                   <div className="text-sm text-slate-600 mt-2">
-                    B-WING, SHUBHKALYAN APARTMENT, B-2103, Nanded City Sinhgad
-                    Rd, Nanded, Maharashtra
+                    Pickup location
                   </div>
                 </div>
               </div>
@@ -94,9 +140,9 @@ export default function RequestBooking() {
 
                 {/* RIGHT: second stop details */}
                 <div className="pl-1">
-                  <div className="text-sky-900 font-semibold">Mumbai</div>
+                  <div className="text-sky-900 font-semibold">{ride.destination}</div>
                   <div className="text-sm text-slate-500 mt-1">
-                    5 Marg Gk, Lower Parel, Maharashtra
+                    Drop-off location
                   </div>
                 </div>
               </div>
@@ -137,7 +183,7 @@ export default function RequestBooking() {
                 </div>
 
                 <div>
-                  <div className="text-sky-900 font-semibold text-lg">Shree</div>
+                  <div className="text-sky-900 font-semibold text-lg">{ride.driverName || "Driver"}</div>
                   <div className="text-sm text-slate-500 mt-1">
                     ★ 4.8/5 - 186 ratings
                   </div>
@@ -328,12 +374,12 @@ export default function RequestBooking() {
             <div className="flex items-center justify-between">
               <div>
                 <div className="text-slate-500 text-sm">Seats available</div>
-                <div className="text-sky-900 font-semibold">2 seats</div>
+                <div className="text-sky-900 font-semibold">{ride.availableSeats} seat{ride.availableSeats !== 1 ? 's' : ''}</div>
               </div>
 
               <div className="text-right">
-                <div className="text-slate-500 text-sm">Price</div>
-                <div className="text-sky-900 font-semibold">₹ 420</div>
+                <div className="text-slate-500 text-sm">Price per seat</div>
+                <div className="text-sky-900 font-semibold">₹ {ride.pricePerSeat}</div>
               </div>
             </div>
 
