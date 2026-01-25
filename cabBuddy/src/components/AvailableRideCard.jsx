@@ -242,6 +242,8 @@
 
 import React from "react";
 
+import { format } from "date-fns";
+
 export default function AvailableRideCard({
   startTime,
   duration,
@@ -249,12 +251,30 @@ export default function AvailableRideCard({
   from,
   to,
   price,
+  rideDate,
   driver = {},
 }) {
   const { name = "Driver", avatar, rating = 5.0 } = driver;
 
+  // Format date for display
+  const formattedDate = rideDate 
+    ? format(new Date(rideDate), "EEE, dd MMM yyyy")
+    : "";
+
   return (
-    <div className="max-w-3xl mx-auto bg-white border-2 border-blue-400 rounded-2xl overflow-hidden shadow-sm my-4">
+    <div className="max-w-3xl mx-auto bg-white border-2 border-blue-400 rounded-2xl overflow-hidden shadow-sm my-4 hover:shadow-md transition-shadow">
+      {/* Date Header */}
+      {formattedDate && (
+        <div className="px-6 py-2 bg-blue-50 border-b border-blue-100">
+          <div className="flex items-center gap-2">
+            <svg className="h-4 w-4 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            <span className="text-sm font-semibold text-blue-900">{formattedDate}</span>
+          </div>
+        </div>
+      )}
+
       {/* Top Section */}
       <div className="px-6 py-4 border-b">
         <div className="flex items-center justify-between">

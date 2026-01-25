@@ -38,7 +38,7 @@ function App() {
         <Route path="/drop-off" element={<DropoffPage />} />
         <Route path="/select-route" element={<SelectRoute />} />
         <Route path="/search" element={<Search />} />
-        <Route path="/requestbooking" element={<RequestBooking />} />
+        <Route path="/requestbooking/:id" element={<RequestBooking />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/verify/phone" element={<PhoneVerificationPage />} />
         <Route path="/verify/email" element={<EmailVerificationPage />} />
