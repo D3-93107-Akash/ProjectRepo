@@ -7,8 +7,7 @@ const api = axios.create({
   },
 });
 
-<<<<<<< HEAD
-=======
+
 
 // Interceptor to add JWT token automatically
 api.interceptors.request.use(config => {
@@ -20,5 +19,5 @@ api.interceptors.request.use(config => {
 });
 
 
->>>>>>> c752b84 (Fixed profile update persistence by correcting userId handling and using a dedicated UpdateUserRequestDTO, ensuring PUT /users/{id} reliably saves changes to the database)
+
 export default api;

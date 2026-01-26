@@ -34,3 +34,15 @@ export const getAllRides = () => {
 export const getRidesByDriver = (driverId) => {
   return api.get(`/rides/driver/${driverId}`);
 };
+
+// ✅ FIXED: Remove extra /api - Now calls /api/rides/my-rides
+export const getMyRides = async () => {
+  const token = localStorage.getItem("authToken");
+  console.log("🔑 TOKEN:", token); // Debug token
+  
+  return api.get("/rides/my-rides", {  // ✅ FIXED: /rides/my-rides (NOT /api/rides/my-rides)
+    headers: { 
+      Authorization: `Bearer ${token}` 
+    },
+  });
+};
