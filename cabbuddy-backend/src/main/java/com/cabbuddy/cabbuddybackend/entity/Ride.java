@@ -40,7 +40,12 @@ public class Ride extends BaseEntity {
     private String destination;
 
     private LocalDate rideDate;
-    private LocalTime rideTime;
+    
+    //  Departure time (pickup time)
+    private LocalTime departureTime;
+    
+    // Arrival time (drop-off time)
+    private LocalTime arrivalTime;
 
     private int availableSeats;
     private double pricePerSeat;
