@@ -6,13 +6,15 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Card, CardContent } from "@/components/ui/card";
+import api from "@/api/axiosInstance"; // Axios instance
 
 export default function Login() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
-  function handleLogin(e) {
+  async function handleLogin(e) {
     e.preventDefault();
 
     if (!email || !password) {
@@ -20,13 +22,23 @@ export default function Login() {
       return;
     }
 
-    localStorage.setItem("token", "dummy-token");
-    navigate("/");
+    try {
+      // Call backend login API
+      const res = await api.post("/auth/login", { email, password });
+      const token = res.data.token;
+
+      // Store JWT in localStorage
+      localStorage.setItem("token", token);
+
+      navigate("/"); // redirect after login
+    } catch (err) {
+      console.error(err);
+      setError(err.response?.data || "Login failed");
+    }
   }
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-white px-4">
-      
       <Card className="w-full max-w-md shadow-sm border border-gray-200 rounded-2xl">
         <CardContent className="p-8 space-y-6">
 
@@ -42,6 +54,7 @@ export default function Login() {
 
           {/* FORM */}
           <form className="space-y-4" onSubmit={handleLogin}>
+
             <div className="space-y-1">
               <Label htmlFor="email" className="text-gray-700">Email</Label>
               <Input
@@ -86,6 +99,8 @@ export default function Login() {
               <span className="text-white font-medium">Login</span>
             </Button>
 
+            {error && <p className="text-red-600 text-sm mt-2">{error}</p>}
+
           </form>
 
           <Separator />
@@ -121,7 +136,6 @@ export default function Login() {
 
         </CardContent>
       </Card>
-
     </div>
   );
 }

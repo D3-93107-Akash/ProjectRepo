@@ -41,22 +41,19 @@ public class JwtFilter extends OncePerRequestFilter {
             if (email != null &&
                     SecurityContextHolder.getContext().getAuthentication() == null) {
 
-                User user = userRepository.findByEmail(email).orElse(null);
+                // ✅ Only active users
+                User user = userRepository.findByEmailAndActiveTrue(email).orElse(null);
 
-                if (user != null) {
+                if (user != null && jwtUtil.validateToken(token, user.getEmail())) {
+
                     UsernamePasswordAuthenticationToken authentication =
                             new UsernamePasswordAuthenticationToken(
                                     user.getEmail(),
                                     null,
-                                    List.of(
-                                            new SimpleGrantedAuthority(
-                                                    "ROLE_" + user.getRole()
-                                            )
-                                    )
+                                    List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole().name()))
                             );
 
-                    SecurityContextHolder.getContext()
-                            .setAuthentication(authentication);
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
                 }
             }
         }
