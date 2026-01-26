@@ -117,7 +117,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class User extends BaseEntity {
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -134,5 +134,8 @@ public class User extends BaseEntity {
     private UserRole role;
 
     private String phone;
-}
 
+    //  SOFT DELETE FLAG
+    @Column(nullable = false)
+    private boolean active = true;
+}
