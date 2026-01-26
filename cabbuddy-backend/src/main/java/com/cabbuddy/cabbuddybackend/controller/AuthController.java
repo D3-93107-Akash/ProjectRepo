@@ -46,6 +46,7 @@ public class AuthController {
 
         // 4️⃣ Build response with token + basic user info
         LoginResponse response = new LoginResponse();
+        response.setId(user.getId());
         response.setToken(token);
         response.setEmail(user.getEmail());
         response.setName(user.getName());
