@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useLocation, Link } from "react-router-dom";
 import { Card } from "@/components/ui/card";
@@ -9,8 +10,15 @@ import { User, ShieldCheck, Star, Car } from "lucide-react";
 import { getMyRides } from "@/api/rideApi";
 import AvailableRideCard from "@/components/AvailableRideCard";
 
+// ✅ UPDATED IMPORT (renamed file)
+import {
+  fetchUserById,
+  updateUserProfile,
+} from "@/api/userfetchApi";
+
 export default function Profile() {
   const [activeSection, setActiveSection] = useState("overview");
+  
   const [phone, setPhone] = useState("7666****27");
   const [email, setEmail] = useState("nikhil@example.com");
 
@@ -36,8 +44,20 @@ export default function Profile() {
   /* =========================
      ✅ VERIFIED STATE
      ========================= */
+
+  // Backend user profile
+  const [userProfile, setUserProfile] = useState(null);
+
+  // Edit mode
+  const [isEditing, setIsEditing] = useState(false);
+  const [editForm, setEditForm] = useState({
+    name: "",
+    phone: "",
+  });
+
+  // Verification state (session-based)
   const [verifiedState, setVerifiedState] = useState(() => {
-    const saved = localStorage.getItem("verifiedState");
+    const saved = sessionStorage.getItem("verifiedState");
     return saved
       ? JSON.parse(saved)
       : { phone: false, email: false, govtId: false, drivingLicense: false };
@@ -45,6 +65,31 @@ export default function Profile() {
 
   const location = useLocation();
 
+  /* --------------------------------------------------
+     Fetch user profile (GET /api/users/{id})
+  -------------------------------------------------- */
+  useEffect(() => {
+    const loadUserProfile = async () => {
+      try {
+        const response = await fetchUserById();
+        setUserProfile(response.data);
+
+        // Pre-fill edit form
+        setEditForm({
+          name: response.data.name,
+          phone: response.data.phone,
+        });
+      } catch (error) {
+        console.error("Failed to load user profile", error);
+      }
+    };
+
+    loadUserProfile();
+  }, []);
+
+  /* --------------------------------------------------
+     Handle verification updates via navigation state
+  -------------------------------------------------- */
   useEffect(() => {
     if (location.state?.verified) {
       const updated = { ...verifiedState, ...location.state.verified };
@@ -114,8 +159,10 @@ export default function Profile() {
     switch (activeSection) {
       case "overview":
         return (
-          <div className="space-y-6">
-            <ProfileOverview user={user} />
+          <div className="animate-fadeIn space-y-6">
+            <ProfileOverview
+              user={user}
+            />
             <ProfileVerification user={user} />
           </div>
         );
@@ -209,14 +256,37 @@ export default function Profile() {
     }
   };
 
-  /* =========================
-     🖥 LAYOUT
-     ========================= */
+  /* --------------------------------------------------
+     Main Render
+  -------------------------------------------------- */
   return (
-    <div className="min-h-screen bg-blue-50 py-10 flex justify-center">
-      <Card className="w-full max-w-5xl p-8 rounded-3xl">
-        <div className="grid md:grid-cols-[260px,1fr] gap-6">
-          <aside className="space-y-3">
+    <div className="min-h-[calc(100vh-64px)] bg-gradient-to-br from-blue-50 via-sky-50 to-indigo-50 py-10 flex justify-center items-start">
+      <Card className="w-full max-w-5xl mx-auto p-8 shadow-2xl rounded-3xl bg-white/90 backdrop-blur border border-blue-100">
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-2xl font-semibold text-blue-900">
+            My Account
+          </h1>
+
+          {!isEditing ? (
+            <button
+              onClick={() => setIsEditing(true)}
+              className="px-4 py-2 rounded-full border text-sm"
+            >
+              Edit Profile
+            </button>
+          ) : (
+            <button
+              onClick={handleCancelEdit}
+              className="px-4 py-2 rounded-full bg-red-500 text-white text-sm"
+            >
+              Cancel
+            </button>
+          )}
+        </div>
+
+        <div className="grid gap-6 md:grid-cols-[260px,1fr]">
+          {/* Sidebar */}
+          <aside className="bg-gradient-to-b from-blue-100 to-blue-50 rounded-2xl p-5 space-y-3 text-blue-900 shadow-lg">
             <SidebarItem
               label="Overview"
               icon={User}
@@ -243,9 +313,34 @@ export default function Profile() {
             />
           </aside>
 
-          <main>{renderSection()}</main>
+          {/* Main Content */}
+          <main className="space-y-6 transition-all duration-300">
+            {renderSection()}
+
+            {isEditing && (
+              <div className="flex justify-end mt-6">
+                <button
+                  onClick={handleSaveProfile}
+                  className="px-6 py-2 rounded-full bg-blue-600 text-white hover:bg-blue-700"
+                >
+                  Save Changes
+                </button>
+              </div>
+            )}
+          </main>
         </div>
       </Card>
+
+      <style>{`
+        .animate-fadeIn {
+          animation: fadeIn 0.45s ease-in-out;
+        }
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+      `}</style>
     </div>
   );
 }
+

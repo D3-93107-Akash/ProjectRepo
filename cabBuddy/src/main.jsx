@@ -6,9 +6,9 @@ import ErrorBoundary from "./components/ErrorBoundary";
 import "./index.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <ErrorBoundary>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
-  </ErrorBoundary>
+  <BrowserRouter>
+    <ErrorBoundary>
+        <App />
+    </ErrorBoundary>
+  </BrowserRouter>
 );
