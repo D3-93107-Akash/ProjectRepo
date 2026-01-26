@@ -10,8 +10,9 @@ import java.util.Date;
 @Component
 public class JwtUtil {
 
-    // Secret key for signing JWTs (should be long and safe)
-    private final String SECRET_KEY = "sgdsdiudgougeyufgeof87r983r7r98hiujkdjksbhkdhi7y87438473984efbjdhsd"; // 32+ chars
+    // ✅ Strong secret key (keep same one)
+    private final String SECRET_KEY =
+            "sgdsdiudgougeyufgeof87r983r7r98hiujkdjksbhkdhi7y87438473984efbjdhsd";
 
     private final long EXPIRATION_TIME = 1000 * 60 * 60 * 10; // 10 hours
 
@@ -30,28 +31,39 @@ public class JwtUtil {
                 .compact();
     }
 
-    // 2️⃣ Extract email from JWT
+    // 2️⃣ Extract email (✅ NULL SAFE)
     public String extractEmail(String token) {
-        return extractClaims(token).getSubject();
+        Claims claims = extractClaims(token);
+        if (claims == null) {
+            return null;
+        }
+        return claims.getSubject();
     }
 
-    // 3️⃣ Extract expiration date
+    // 3️⃣ Extract expiration (✅ NULL SAFE)
     public Date extractExpiration(String token) {
-        return extractClaims(token).getExpiration();
+        Claims claims = extractClaims(token);
+        if (claims == null) {
+            return null;
+        }
+        return claims.getExpiration();
     }
 
-    // 4️⃣ Validate token
+    // 4️⃣ Validate token (✅ SAFE)
     public boolean validateToken(String token, String email) {
-        final String extractedEmail = extractEmail(token);
-        return (extractedEmail.equals(email) && !isTokenExpired(token));
+        String extractedEmail = extractEmail(token);
+        return extractedEmail != null
+                && extractedEmail.equals(email)
+                && !isTokenExpired(token);
     }
 
-    // 5️⃣ Check if token expired
+    // 5️⃣ Check expiration (✅ SAFE)
     private boolean isTokenExpired(String token) {
-        return extractExpiration(token).before(new Date());
+        Date expiration = extractExpiration(token);
+        return expiration == null || expiration.before(new Date());
     }
 
-    // 6️⃣ Extract claims safely
+    // 6️⃣ Extract claims (LOG REAL ERROR)
     private Claims extractClaims(String token) {
         try {
             return Jwts.parserBuilder()
@@ -59,9 +71,17 @@ public class JwtUtil {
                     .build()
                     .parseClaimsJws(token)
                     .getBody();
-        } catch (JwtException e) {
-            // Token invalid, expired, or malformed
-            return null;
+        } catch (ExpiredJwtException e) {
+            System.out.println("JWT expired");
+        } catch (UnsupportedJwtException e) {
+            System.out.println("JWT unsupported");
+        } catch (MalformedJwtException e) {
+            System.out.println("JWT malformed");
+        } catch (SignatureException e) {
+            System.out.println("JWT signature invalid");
+        } catch (IllegalArgumentException e) {
+            System.out.println("JWT token empty or null");
         }
+        return null;
     }
 }

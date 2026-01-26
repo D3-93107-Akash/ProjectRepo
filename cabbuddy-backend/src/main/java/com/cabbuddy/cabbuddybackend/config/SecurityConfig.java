@@ -1,8 +1,8 @@
 package com.cabbuddy.cabbuddybackend.config;
 
-import com.cabbuddy.cabbuddybackend.config.JwtFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -25,40 +25,46 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
-            //  Disable CSRF (JWT is stateless)
+            // ✅ ENABLE CORS
+            .cors(cors -> {})
+
+            // ✅ Disable CSRF (JWT)
             .csrf(csrf -> csrf.disable())
 
-            //  Disable session (JWT only)
+            // ✅ Stateless session
             .sessionManagement(session ->
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )
 
             .authorizeHttpRequests(auth -> auth
 
-                //  PUBLIC ENDPOINTS (UNCHANGED)
-                .requestMatchers("/api/rides/**").permitAll()
+                // ✅ Allow preflight requests
+                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+
+                // ✅ Public endpoints
                 .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers("/api/rides/**").permitAll()
                 .requestMatchers("/api/vehicles/**").permitAll()
                 .requestMatchers("/api/users/**").permitAll()
                 .requestMatchers("/api/bookings/**").permitAll()
                 .requestMatchers("/swagger-ui/**").permitAll()
                 .requestMatchers("/v3/api-docs/**").permitAll()
 
-                //  EVERYTHING ELSE NEEDS JWT
+                // 🔐 Everything else needs JWT
                 .anyRequest().authenticated()
             )
 
-            //  Disable default login methods
+            // ❌ Disable default auth
             .formLogin(form -> form.disable())
-            .httpBasic(basic -> basic.disable());
+            .httpBasic(basic -> basic.disable())
 
-        // JWT FILTER (VERY IMPORTANT)
-        http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+            // ✅ JWT filter
+            .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
 
-    //  Password encoder (needed for login)
+    // 🔐 Password encoder
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
