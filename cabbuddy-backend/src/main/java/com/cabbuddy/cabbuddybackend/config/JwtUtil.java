@@ -10,7 +10,7 @@ import java.util.Date;
 @Component
 public class JwtUtil {
 
-    // ✅ Strong secret key (keep same one)
+    // ✅ Strong secret key (same as before)
     private final String SECRET_KEY =
             "sgdsdiudgougeyufgeof87r983r7r98hiujkdjksbhkdhi7y87438473984efbjdhsd";
 
@@ -20,10 +20,13 @@ public class JwtUtil {
         return Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
     }
 
-    // 1️⃣ Generate token
-    public String generateToken(String email, String role) {
+    // =========================================================
+    // 1️⃣ Generate token (UPDATED → includes userId)
+    // =========================================================
+    public String generateToken(Long userId, String email, String role) {
         return Jwts.builder()
                 .setSubject(email)
+                .claim("userId", userId)   // ✅ IMPORTANT
                 .claim("role", role)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
@@ -31,25 +34,46 @@ public class JwtUtil {
                 .compact();
     }
 
-    // 2️⃣ Extract email (✅ NULL SAFE)
+    // =========================================================
+    // 2️⃣ Extract email (NULL SAFE)
+    // =========================================================
     public String extractEmail(String token) {
         Claims claims = extractClaims(token);
-        if (claims == null) {
-            return null;
-        }
-        return claims.getSubject();
+        return claims != null ? claims.getSubject() : null;
     }
 
-    // 3️⃣ Extract expiration (✅ NULL SAFE)
+    // =========================================================
+    // 3️⃣ Extract userId (NEW)
+    // =========================================================
+    public Long extractUserId(String token) {
+        Claims claims = extractClaims(token);
+        if (claims == null) return null;
+
+        Object userId = claims.get("userId");
+        if (userId == null) return null;
+
+        return Long.valueOf(userId.toString());
+    }
+
+    // =========================================================
+    // 4️⃣ Extract role
+    // =========================================================
+    public String extractRole(String token) {
+        Claims claims = extractClaims(token);
+        return claims != null ? claims.get("role", String.class) : null;
+    }
+
+    // =========================================================
+    // 5️⃣ Extract expiration
+    // =========================================================
     public Date extractExpiration(String token) {
         Claims claims = extractClaims(token);
-        if (claims == null) {
-            return null;
-        }
-        return claims.getExpiration();
+        return claims != null ? claims.getExpiration() : null;
     }
 
-    // 4️⃣ Validate token (✅ SAFE)
+    // =========================================================
+    // 6️⃣ Validate token
+    // =========================================================
     public boolean validateToken(String token, String email) {
         String extractedEmail = extractEmail(token);
         return extractedEmail != null
@@ -57,13 +81,14 @@ public class JwtUtil {
                 && !isTokenExpired(token);
     }
 
-    // 5️⃣ Check expiration (✅ SAFE)
     private boolean isTokenExpired(String token) {
         Date expiration = extractExpiration(token);
         return expiration == null || expiration.before(new Date());
     }
 
-    // 6️⃣ Extract claims (LOG REAL ERROR)
+    // =========================================================
+    // 7️⃣ Extract claims (LOG REAL ERRORS)
+    // =========================================================
     private Claims extractClaims(String token) {
         try {
             return Jwts.parserBuilder()

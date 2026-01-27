@@ -25,10 +25,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
-            // ✅ ENABLE CORS
-            .cors(cors -> {})
-
-            // ✅ Disable CSRF (JWT)
+            // ✅ CSRF disabled (JWT is stateless)
             .csrf(csrf -> csrf.disable())
 
             // ✅ Stateless session
@@ -36,6 +33,7 @@ public class SecurityConfig {
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )
 
+            // ✅ Endpoint security
             .authorizeHttpRequests(auth -> auth
 
                 // ✅ Allow preflight requests
@@ -46,15 +44,17 @@ public class SecurityConfig {
                 .requestMatchers("/api/rides/**").permitAll()
                 .requestMatchers("/api/vehicles/**").permitAll()
                 .requestMatchers("/api/users/**").permitAll()
-                .requestMatchers("/api/bookings/**").permitAll()
                 .requestMatchers("/swagger-ui/**").permitAll()
                 .requestMatchers("/v3/api-docs/**").permitAll()
 
-                // 🔐 Everything else needs JWT
+                // 🔐 Driver-only endpoint
+                .requestMatchers("/api/bookings/ride/**").hasRole("DRIVER")
+
+                // 🔐 Everything else requires authentication
                 .anyRequest().authenticated()
             )
 
-            // ❌ Disable default auth
+            // ❌ Disable default login forms
             .formLogin(form -> form.disable())
             .httpBasic(basic -> basic.disable())
 
