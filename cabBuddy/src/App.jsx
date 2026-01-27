@@ -1,56 +1,108 @@
-import "./App.css";
+import { Routes, Route, Navigate } from "react-router-dom";
 import Navbar from "./components/Navbar";
-import { Routes, Route } from "react-router-dom";
 
 // Pages
-import Home from "./pages/Home";
 import Login from "./pages/Login";
 import SignupPage from "./pages/signup";
-import PublishRide from "./pages/AddRide"; // Fixed import
-import Payments from "./pages/Payments";
-import SelectRoute from "./pages/SelectRoute";
-import Search from "./pages/Search";
-import RequestBooking from "./pages/requestbooking";
+import Home from "./pages/Home";
 import Profile from "./pages/Profile";
+import PublishRide from "./pages/AddRide";
+import Payments from "./pages/Payments";
+import Search from "./pages/Search";
+import SelectRoute from "./pages/SelectRoute";
+import RequestBooking from "./pages/requestbooking";
 import Bookings from "./pages/Bookings";
 import Logout from "./pages/Logout";
 
-// Profile verification components
-import PhoneVerificationPage from "./components/profile/PhoneVerificationPage";
-import EmailVerificationPage from "./components/profile/EmailVerificationPage";
-import GovtIdVerificationPage from "./components/profile/GovtIdVerificationPage";
-import DrivingLicenseVerificationPage from "./components/profile/DrivingLicenseVerificationPage";
-
-// Toast notifications
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+// Route Guards
+import ProtectedRoute from "./routes/ProtectedRoute";
+import DriverRoute from "./routes/DriverRoute";
 
 function App() {
   return (
     <>
       <Navbar />
+
       <Routes>
-        <Route path="/" element={<Home />} />
+        {/* 🔑 Public */}
+        <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignupPage />} />
-        <Route path="/publish-ride" element={<PublishRide />} />
-        <Route path="/my-payments" element={<Payments />} />
-        {/* <Route path="/pickup" element={<PickupPage />} /> */}
-        {/* <Route path="/drop-off" element={<DropoffPage />} /> */}
-        <Route path="/select-route" element={<SelectRoute />} />
-        <Route path="/search" element={<Search />} />
-        <Route path="/requestbooking/:id" element={<RequestBooking />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/verify/phone" element={<PhoneVerificationPage />} />
-        <Route path="/verify/email" element={<EmailVerificationPage />} />
-        <Route path="/verify/govt-id" element={<GovtIdVerificationPage />} />
-        <Route path="/verify/driving-license" element={<DrivingLicenseVerificationPage />} />
-        <Route path="/my-bookings" element={<Bookings />} />
-        <Route path="/logout" element={<Logout />} />
-      </Routes>
 
-      {/* Toast container for notifications */}
-      <ToastContainer position="bottom-right" autoClose={3000} />
+        {/* 🔒 Protected Pages */}
+        <Route
+          path="/home"
+          element={
+            <ProtectedRoute>
+              <Home />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/my-bookings"
+          element={
+            <ProtectedRoute>
+              <Bookings />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/my-payments"
+          element={
+            <ProtectedRoute>
+              <Payments />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/requestbooking/:id"
+          element={
+            <ProtectedRoute>
+              <RequestBooking />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/search"
+          element={
+            <ProtectedRoute>
+              <Search />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/select-route"
+          element={
+            <ProtectedRoute>
+              <SelectRoute />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* 🚗 Driver Only Pages */}
+        <Route
+          path="/publish-ride"
+          element={
+            <DriverRoute>
+              <PublishRide />
+            </DriverRoute>
+          }
+        />
+
+        {/* 🔓 Logout */}
+        <Route path="/logout" element={<Logout />} />
+
+        {/* ❌ Fallback */}
+        <Route path="*" element={<Navigate to="/login" replace />} />
+      </Routes>
     </>
   );
 }

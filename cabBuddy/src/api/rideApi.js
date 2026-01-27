@@ -11,7 +11,7 @@ export const searchRides = (source, destination, date) => {
   if (source) params.append("source", source);
   if (destination) params.append("destination", destination);
   if (date) params.append("date", date);
-  
+
   return api.get(`/rides/search?${params.toString()}`);
 };
 
@@ -30,19 +30,27 @@ export const getAllRides = () => {
   return api.get("/rides/status");
 };
 
-// GET RIDES BY DRIVER
+// GET RIDES BY DRIVER ID
 export const getRidesByDriver = (driverId) => {
-  return api.get(`/rides/driver/${driverId}`);
+  const token = localStorage.getItem("authToken");
+  return api.get(`/rides/driver/${driverId}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
 };
 
-// ✅ FIXED: Remove extra /api - Now calls /api/rides/my-rides
+// GET MY RIDES (driver)
 export const getMyRides = async () => {
+  const loginData = JSON.parse(localStorage.getItem("user")) ||
+                    JSON.parse(localStorage.getItem("loginResponse")) ||
+                    JSON.parse(localStorage.getItem("auth"));
+
+  if (!loginData?.id) throw new Error("Driver not logged in");
+
   const token = localStorage.getItem("authToken");
-  console.log("🔑 TOKEN:", token); // Debug token
-  
-  return api.get("/rides/my-rides", {  // ✅ FIXED: /rides/my-rides (NOT /api/rides/my-rides)
-    headers: { 
-      Authorization: `Bearer ${token}` 
-    },
+  console.log("🔑 TOKEN:", token, "DriverId:", loginData.id); // Debug
+
+  // ✅ Call the backend driver endpoint
+  return api.get(`/rides/driver/${loginData.id}`, {
+    headers: { Authorization: `Bearer ${token}` },
   });
 };

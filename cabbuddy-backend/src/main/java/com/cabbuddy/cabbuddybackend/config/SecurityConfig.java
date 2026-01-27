@@ -25,21 +25,21 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
-            // ✅ CSRF disabled (JWT is stateless)
+            //  CSRF disabled (JWT is stateless)
             .csrf(csrf -> csrf.disable())
 
-            // ✅ Stateless session
+            //  Stateless session
             .sessionManagement(session ->
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )
 
-            // ✅ Endpoint security
+            //  Endpoint security
             .authorizeHttpRequests(auth -> auth
 
-                // ✅ Allow preflight requests
+                //  Allow preflight requests
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
-                // ✅ Public endpoints
+                //  Public endpoints
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers("/api/rides/**").permitAll()
                 .requestMatchers("/api/vehicles/**").permitAll()
@@ -47,24 +47,24 @@ public class SecurityConfig {
                 .requestMatchers("/swagger-ui/**").permitAll()
                 .requestMatchers("/v3/api-docs/**").permitAll()
 
-                // 🔐 Driver-only endpoint
+                //  Driver-only endpoint
                 .requestMatchers("/api/bookings/ride/**").hasRole("DRIVER")
 
-                // 🔐 Everything else requires authentication
+                //  Everything else requires authentication
                 .anyRequest().authenticated()
             )
 
-            // ❌ Disable default login forms
+            //  Disable default login forms
             .formLogin(form -> form.disable())
             .httpBasic(basic -> basic.disable())
 
-            // ✅ JWT filter
+            //  JWT filter
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
 
-    // 🔐 Password encoder
+    //  Password encoder
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
