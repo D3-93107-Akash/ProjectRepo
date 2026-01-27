@@ -1,14 +1,29 @@
 /**
  * Centralized user context helper
  * --------------------------------
- * TEMP implementation (pre-JWT):
- * - Returns a hardcoded userId
- * - MUST be replaced when JWT is added
- *
- *  IMPORTANT:
- * - Components and API services must NOT hardcode userId
- * - Only this file will change when JWT is introduced
+ * Reads userId from JWT payload
  */
+
 export const getCurrentUserId = () => {
-  return 6; // TEMP: replace with JWT-derived userId later
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    console.warn("JWT token not found in localStorage");
+    return null;
+  }
+
+  try {
+    const payloadBase64 = token.split(".")[1];
+    const payload = JSON.parse(atob(payloadBase64));
+
+    if (!payload.userId) {
+      console.warn("userId not found in JWT payload");
+      return null;
+    }
+
+    return payload.userId;
+  } catch (error) {
+    console.error("Failed to decode JWT", error);
+    return null;
+  }
 };

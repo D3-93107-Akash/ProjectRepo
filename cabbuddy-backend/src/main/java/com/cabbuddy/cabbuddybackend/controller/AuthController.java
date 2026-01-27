@@ -27,7 +27,7 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
 
-        // 1️⃣ Find only active users by email
+        // 1️⃣ Find active user
         User user = userRepository.findByEmailAndActiveTrue(request.getEmail())
                 .orElseThrow(() -> new RuntimeException("User not found or inactive"));
 
@@ -38,13 +38,14 @@ public class AuthController {
                     .body("Invalid credentials");
         }
 
-        // 3️⃣ Generate JWT token
+        // 3️⃣ Generate JWT token (✅ FIXED: includes userId)
         String token = jwtUtil.generateToken(
+                user.getId(),            // ✅ IMPORTANT
                 user.getEmail(),
                 user.getRole().name()
         );
 
-        // 4️⃣ Build response with token + basic user info
+        // 4️⃣ Build response payload
         LoginResponse response = new LoginResponse();
         response.setId(user.getId());
         response.setToken(token);
