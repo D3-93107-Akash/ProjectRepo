@@ -20,7 +20,11 @@
     "@radix-ui/react-separator": "^1.1.8",
     "@radix-ui/react-slot": "^1.2.4",
     "@tailwindcss/vite": "^4.1.16",
+<<<<<<< HEAD
     "axios": "^1.13.2",
+=======
+    "axios": "^1.13.3",
+>>>>>>> c752b84 (Fixed profile update persistence by correcting userId handling and using a dedicated UpdateUserRequestDTO, ensuring PUT /users/{id} reliably saves changes to the database)
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
@@ -44,6 +48,7 @@
     "@types/react": "^19.1.16",
     "@types/react-dom": "^19.1.9",
     "@vitejs/plugin-react": "^5.0.4",
+    "baseline-browser-mapping": "^2.9.18",
     "eslint": "^9.36.0",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.22",
