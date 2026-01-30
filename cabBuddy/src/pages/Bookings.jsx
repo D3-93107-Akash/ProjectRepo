@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { fetchUserBookings, cancelBooking } from "../api/bookingApi";
 import { fetchBookingById } from "../api/bookingApi";
+import { getCurrentUserId } from "../config/auth";
 
 
 /**
@@ -74,10 +75,55 @@ const Bookings = () => {
 
 /**
  * Search booking by bookingId
- */
+//  */
+// const handleSearchByBookingId = async () => {
+//   if (!searchBookingId) {
+//     // If input empty, reset list
+//     setBookings(allBookings);
+//     return;
+//   }
+
+//   try {
+//     const response = await fetchBookingById(searchBookingId);
+
+//     // Backend returns single object, wrap in array for UI consistency
+//     setBookings([response.data]);
+//   } catch (err) {
+//     console.error("Booking not found:", err);
+//     setBookings([]);
+//   }
+// };
+
+// const handleSearchByBookingId = async () => {
+//   if (!searchBookingId) {
+//     // Reset to all confirmed bookings
+//     setBookings(allBookings);
+//     return;
+//   }
+
+//   try {
+//     const response = await fetchBookingById(searchBookingId);
+//     const booking = response.data;
+
+//     const currentUserId = getCurrentUserId();
+
+//     //  FRONTEND AUTHORIZATION CHECK
+//     if (booking.userId !== currentUserId) {
+//       // Booking exists but does NOT belong to this user
+//       setBookings([]);
+//       return;
+//     }
+
+//     // Booking belongs to logged-in user
+//     setBookings([booking]);
+//   } catch (err) {
+//     console.error("Booking not found:", err);
+//     setBookings([]);
+//   }
+// };
+
 const handleSearchByBookingId = async () => {
   if (!searchBookingId) {
-    // If input empty, reset list
     setBookings(allBookings);
     return;
   }
@@ -85,15 +131,13 @@ const handleSearchByBookingId = async () => {
   try {
     const response = await fetchBookingById(searchBookingId);
 
-    // Backend returns single object, wrap in array for UI consistency
+    // Backend already enforces authorization
     setBookings([response.data]);
   } catch (err) {
     console.error("Booking not found:", err);
     setBookings([]);
   }
 };
-
-
 
 
 

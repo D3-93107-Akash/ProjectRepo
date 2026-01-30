@@ -19,12 +19,10 @@
     "@radix-ui/react-select": "^2.2.6",
     "@radix-ui/react-separator": "^1.1.8",
     "@radix-ui/react-slot": "^1.2.4",
+    "@stripe/react-stripe-js": "^5.6.0",
+    "@stripe/stripe-js": "^8.7.0",
     "@tailwindcss/vite": "^4.1.16",
-<<<<<<< HEAD
     "axios": "^1.13.2",
-=======
-    "axios": "^1.13.3",
->>>>>>> c752b84 (Fixed profile update persistence by correcting userId handling and using a dedicated UpdateUserRequestDTO, ensuring PUT /users/{id} reliably saves changes to the database)
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",

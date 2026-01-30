@@ -29,7 +29,28 @@ public class BookingServiceImpl implements BookingService {
     private final RideRepository rideRepository;
     private final UserRepository userRepository;
 
+//    @Override
+//    public BookingResponseDTO createBooking(Long userId, BookingRequestDTO requestDTO) {
+//
+//        User user = userRepository.findById(userId)
+//                .orElseThrow(() -> new RuntimeException("User not found"));
+//
+//        Ride ride = rideRepository.findById(requestDTO.getRideId())
+//                .orElseThrow(() -> new RuntimeException("Ride not found"));
+//
+//        Booking booking = new Booking();
+//        booking.setUser(user);
+//        booking.setRide(ride);
+//        booking.setSeatsBooked(requestDTO.getSeatsBooked());
+//        booking.setStatus(BookingStatus.CONFIRMED);
+//
+//        Booking savedBooking = bookingRepository.save(booking);
+//
+//        return mapToResponseDTO(savedBooking);
+//    }
+    
     @Override
+    @Transactional
     public BookingResponseDTO createBooking(Long userId, BookingRequestDTO requestDTO) {
 
         User user = userRepository.findById(userId)
@@ -38,16 +59,34 @@ public class BookingServiceImpl implements BookingService {
         Ride ride = rideRepository.findById(requestDTO.getRideId())
                 .orElseThrow(() -> new RuntimeException("Ride not found"));
 
+        int seatsRequested = requestDTO.getSeatsBooked();
+
+        // Seat validation
+        if (ride.getAvailableSeats() < seatsRequested) {
+            throw new RuntimeException("Not enough seats available");
+        }
+
+        //  Reduce seats
+        ride.setAvailableSeats(
+                ride.getAvailableSeats() - seatsRequested
+        );
+
+        //  Save updated ride
+        rideRepository.save(ride);
+
+        //  Create booking
         Booking booking = new Booking();
         booking.setUser(user);
         booking.setRide(ride);
-        booking.setSeatsBooked(requestDTO.getSeatsBooked());
+        booking.setSeatsBooked(seatsRequested);
         booking.setStatus(BookingStatus.CONFIRMED);
 
         Booking savedBooking = bookingRepository.save(booking);
 
         return mapToResponseDTO(savedBooking);
     }
+
+    
 
     @Override
     public BookingResponseDTO getBookingById(Long bookingId) {

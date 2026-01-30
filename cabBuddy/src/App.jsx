@@ -14,6 +14,8 @@ import RequestBooking from "./pages/requestbooking";
 import Profile from "./pages/Profile";
 import Bookings from "./pages/Bookings";
 import Logout from "./pages/Logout";
+import Checkout from "@/pages/Checkout";
+import PaymentFailed from "@/pages/PaymentFailed";
 
 // Profile verification components
 import PhoneVerificationPage from "./components/profile/PhoneVerificationPage";
@@ -46,6 +48,9 @@ function App() {
         <Route path="/verify/govt-id" element={<GovtIdVerificationPage />} />
         <Route path="/verify/driving-license" element={<DrivingLicenseVerificationPage />} />
         <Route path="/my-bookings" element={<Bookings />} />
+         {/* ADD THIS */}
+        <Route path="/checkout" element={<Checkout />} />
+        <Route path="/payment-failed" element={<PaymentFailed />} />
         <Route path="/logout" element={<Logout />} />
       </Routes>
 

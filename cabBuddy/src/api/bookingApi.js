@@ -32,3 +32,9 @@ export const cancelBooking = async (bookingId) => {
 export const fetchBookingById = (bookingId) => {
   return axiosInstance.get(`/bookings/${bookingId}`);
 };
+
+
+// CREATE BOOKING (USED AFTER PAYMENT SUCCESS)
+export const createBooking = (data) => {
+  return axiosInstance.post("/bookings", data);
+};
