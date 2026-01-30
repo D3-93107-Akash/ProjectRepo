@@ -25,10 +25,13 @@ export default function Login() {
     try {
       // Call backend login API
       const res = await api.post("/auth/login", { email, password });
-      const token = res.data.token;
 
-      // Store JWT in localStorage
+      const token = res.data.token;
+      const role = res.data.role; // ✅ REQUIRED CHANGE
+
+      // Store JWT + role in localStorage
       localStorage.setItem("token", token);
+      localStorage.setItem("role", role); // ✅ REQUIRED CHANGE
 
       navigate("/"); // redirect after login
     } catch (err) {
@@ -110,7 +113,6 @@ export default function Login() {
             Or continue with
           </div>
 
-          {/* GOOGLE sign up */}
           <div className="grid grid-cols-1 gap-3">
             <Button
               className="

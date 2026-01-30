@@ -6,9 +6,14 @@ import com.cabbuddy.cabbuddybackend.entity.User;
 import com.cabbuddy.cabbuddybackend.entity.Vehicle;
 import com.cabbuddy.cabbuddybackend.repository.UserRepository;
 import com.cabbuddy.cabbuddybackend.repository.VehicleRepository;
+
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 @Service
 public class VehicleServiceImplementation implements VehicleService {
@@ -23,14 +28,35 @@ public class VehicleServiceImplementation implements VehicleService {
         this.userRepository = userRepository;
     }
 
-    // ---------------- ADD VEHICLE ----------------
+//    // ---------------- ADD VEHICLE ----------------
+//    @Override
+//    public VehicleResponseDTO addVehicle(VehicleRequestDTO dto) {
+//
+//        User driver = userRepository.findById(dto.getDriverId())
+//                .orElseThrow(() -> new ResponseStatusException(
+//                        HttpStatus.NOT_FOUND,
+//                        "Driver not found with ID: " + dto.getDriverId()
+//                ));
+//
+//        Vehicle vehicle = new Vehicle();
+//        vehicle.setVehicleNumber(dto.getVehicleNumber());
+//        vehicle.setModel(dto.getModel());
+//        vehicle.setType(dto.getType());
+//        vehicle.setCapacity(dto.getCapacity());
+//        vehicle.setDriver(driver);
+//
+//        return mapToResponse(vehicleRepository.save(vehicle));
+//    }
+    
     @Override
     public VehicleResponseDTO addVehicle(VehicleRequestDTO dto) {
 
-        User driver = userRepository.findById(dto.getDriverId())
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String email = auth.getName();
+
+        User driver = userRepository.findByEmailAndActiveTrue(email)
                 .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND,
-                        "Driver not found with ID: " + dto.getDriverId()
+                        HttpStatus.UNAUTHORIZED, "Driver not found"
                 ));
 
         Vehicle vehicle = new Vehicle();
@@ -40,8 +66,10 @@ public class VehicleServiceImplementation implements VehicleService {
         vehicle.setCapacity(dto.getCapacity());
         vehicle.setDriver(driver);
 
-        return mapToResponse(vehicleRepository.save(vehicle));
+        Vehicle saved = vehicleRepository.save(vehicle);
+        return mapToResponseDTO(saved);
     }
+
 
     // ---------------- GET BY DRIVER ----------------
     @Override
@@ -84,6 +112,33 @@ public class VehicleServiceImplementation implements VehicleService {
 
         vehicleRepository.delete(vehicle);
     }
+    
+    
+    @Override
+    public List<VehicleResponseDTO> getVehiclesByDriverEmail(String email) {
+
+        List<Vehicle> vehicles = vehicleRepository.findByDriverEmail(email);
+
+        return vehicles.stream()
+                .map(this::mapToResponseDTO)
+                .toList();
+    }
+
+    
+    private VehicleResponseDTO mapToResponseDTO(Vehicle vehicle) {
+
+        VehicleResponseDTO dto = new VehicleResponseDTO();
+        dto.setId(vehicle.getId());
+        dto.setVehicleNumber(vehicle.getVehicleNumber());
+        dto.setModel(vehicle.getModel());
+        dto.setType(vehicle.getType());
+        dto.setCapacity(vehicle.getCapacity());
+
+        return dto;
+    }
+
+    
+    
 
     // ---------------- MAPPER METHOD ----------------
     private VehicleResponseDTO mapToResponse(Vehicle vehicle) {
