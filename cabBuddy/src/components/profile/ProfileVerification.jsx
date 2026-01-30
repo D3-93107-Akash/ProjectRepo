@@ -12,6 +12,7 @@ export default function ProfileVerification({ user }) {
       <p className="text-xs text-slate-500 mb-4">
         Keep your profile verified to build trust with other CabBuddy users.
       </p>
+      
 
       <div className="space-y-1">
 

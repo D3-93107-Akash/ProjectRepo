@@ -42,7 +42,7 @@ public class SecurityConfig {
                 // ✅ Public endpoints
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers("/api/rides/**").permitAll()
-                .requestMatchers("/api/vehicles/**").permitAll()
+                .requestMatchers("/api/vehicles/**").hasRole("DRIVER")
                 .requestMatchers("/api/users/**").permitAll()
                 .requestMatchers("/swagger-ui/**").permitAll()
                 .requestMatchers("/v3/api-docs/**").permitAll()
