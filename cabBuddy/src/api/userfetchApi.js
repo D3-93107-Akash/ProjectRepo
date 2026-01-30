@@ -6,7 +6,13 @@ export const fetchUserById = () => {
   return axiosInstance.get(`/users/${userId}`);
 };
 
-export const updateUserProfile = (data) => {
-  const userId = getCurrentUserId();
-  return axiosInstance.put(`/users/${userId}`, data);
+
+
+// export const updateUserProfile = (data) => {
+//   const userId = getCurrentUserId();
+//   return axiosInstance.put(`/users/${userId}`, data);
+// };
+
+export const updateUserProfile = (userId, payload) => {
+  return axiosInstance.put(`/users/${userId}`, payload);
 };

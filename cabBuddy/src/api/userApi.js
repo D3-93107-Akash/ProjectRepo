@@ -24,4 +24,3 @@ export const updateUser = (userId, userData) => {
 export const getUsersByRole = (role) => {
   return api.get(`/users/role/${role}`);
 };
-

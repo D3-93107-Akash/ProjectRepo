@@ -3,6 +3,10 @@ package com.cabbuddy.cabbuddybackend.controller;
 import com.cabbuddy.cabbuddybackend.dto.VehicleRequestDTO;
 import com.cabbuddy.cabbuddybackend.dto.VehicleResponseDTO;
 import com.cabbuddy.cabbuddybackend.service.VehicleService;
+import java.util.List;
+
+import org.springframework.security.core.Authentication;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,11 +26,11 @@ public class VehicleController {
         return ResponseEntity.ok(vehicleService.addVehicle(dto));
     }
 
-    @GetMapping("/driver/{driverId}")
-    public ResponseEntity<VehicleResponseDTO> getVehicleByDriver(
-            @PathVariable Long driverId) {
-        return ResponseEntity.ok(vehicleService.getVehicleByDriver(driverId));
-    }
+//    @GetMapping("/driver/{driverId}")
+//    public ResponseEntity<VehicleResponseDTO> getVehicleByDriver(
+//            @PathVariable Long driverId) {
+//        return ResponseEntity.ok(vehicleService.getVehicleByDriver(driverId));
+//    }
 
     @PutMapping("/{id}")
     public ResponseEntity<VehicleResponseDTO> updateVehicle(
@@ -40,4 +44,14 @@ public class VehicleController {
         vehicleService.deleteVehicle(id);
         return ResponseEntity.ok("Vehicle deleted successfully");
     }
+    
+    @GetMapping
+    public ResponseEntity<List<VehicleResponseDTO>> getMyVehicles(
+            Authentication authentication) {
+
+        String email = authentication.getName(); // set by JwtFilter
+        return ResponseEntity.ok(vehicleService.getVehiclesByDriverEmail(email));
+    }
+
+    
 }
