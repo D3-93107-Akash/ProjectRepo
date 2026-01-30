@@ -25,46 +25,40 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
-            //  CSRF disabled (JWT is stateless)
             .csrf(csrf -> csrf.disable())
 
-            //  Stateless session
             .sessionManagement(session ->
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )
 
-            //  Endpoint security
             .authorizeHttpRequests(auth -> auth
 
-                //  Allow preflight requests
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
-                //  Public endpoints
-                .requestMatchers("/api/auth/**").permitAll()
-                .requestMatchers("/api/rides/**").permitAll()
-                .requestMatchers("/api/vehicles/**").permitAll()
-                .requestMatchers("/api/users/**").permitAll()
-                .requestMatchers("/swagger-ui/**").permitAll()
-                .requestMatchers("/v3/api-docs/**").permitAll()
+                // ✅ PUBLIC
+                .requestMatchers(
+                    "/api/auth/**",
+                    "/api/rides/**",
+                    "/api/vehicles/**",
+                    "/swagger-ui/**",
+                    "/v3/api-docs/**"
+                ).permitAll()
 
-                //  Driver-only endpoint
+                // 🔐 DRIVER ONLY
                 .requestMatchers("/api/bookings/ride/**").hasRole("DRIVER")
 
-                //  Everything else requires authentication
+                // 🔐 EVERYTHING ELSE
                 .anyRequest().authenticated()
             )
 
-            //  Disable default login forms
             .formLogin(form -> form.disable())
             .httpBasic(basic -> basic.disable())
 
-            //  JWT filter
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
 
-    //  Password encoder
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

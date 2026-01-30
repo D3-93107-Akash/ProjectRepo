@@ -32,14 +32,19 @@ export default function Login() {
 
       const data = res.data;
 
-      // ✅ STORE AUTH DATA (ONLY THESE KEYS)
+      // Store auth data
       localStorage.setItem("token", data.token);
+      localStorage.setItem("authToken", data.token);
       localStorage.setItem("user", JSON.stringify(data));
 
       console.log("✅ LOGIN SUCCESS", data);
 
-      // ✅ REDIRECT AFTER LOGIN
-      navigate("/home", { replace: true });
+      // Redirect: admin → admin dashboard, else home
+      if (data.role === "ADMIN") {
+        navigate("/admin/dashboard", { replace: true });
+      } else {
+        navigate("/home", { replace: true });
+      }
 
     } catch (err) {
       console.error("❌ Login failed:", err);

@@ -2,8 +2,9 @@ import { useState, useEffect, useRef } from "react";
 import { Input } from "@/components/ui/input";
 import { MapPin, Clock, X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { getAllRides } from "@/api/rideApi";
 
-// Popular Indian cities and locations
+// Popular Indian cities and locations (fallback)
 const POPULAR_LOCATIONS = [
   "Mumbai", "Delhi", "Bangalore", "Hyderabad", "Chennai", "Kolkata", 
   "Pune", "Ahmedabad", "Jaipur", "Surat", "Lucknow", "Kanpur",
@@ -11,7 +12,8 @@ const POPULAR_LOCATIONS = [
   "Vadodara", "Ghaziabad", "Ludhiana", "Agra", "Nashik", "Faridabad",
   "Meerut", "Rajkot", "Varanasi", "Srinagar", "Amritsar", "Allahabad",
   "Howrah", "Gwalior", "Jabalpur", "Coimbatore", "Vijayawada", "Jodhpur",
-  "Madurai", "Raipur", "Kota", "Chandigarh", "Guwahati", "Solapur"
+  "Madurai", "Raipur", "Kota", "Chandigarh", "Guwahati", "Solapur",
+  "Aurangabad", "Nashik", "Kolhapur", "Sangli", "Satara", "Ratnagiri"
 ];
 
 export default function LocationAutocomplete({
@@ -29,6 +31,8 @@ export default function LocationAutocomplete({
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [recentSearches, setRecentSearches] = useState([]);
+  const [databaseLocations, setDatabaseLocations] = useState([]);
+  const [loadingLocations, setLoadingLocations] = useState(false);
   const inputRef = useRef(null);
   const suggestionsRef = useRef(null);
   const containerRef = useRef(null);
@@ -45,6 +49,42 @@ export default function LocationAutocomplete({
     }
   }, []);
 
+  // Fetch unique locations from database
+  useEffect(() => {
+    const fetchLocations = async () => {
+      setLoadingLocations(true);
+      try {
+        const response = await getAllRides();
+        const rides = response.data || [];
+        
+        // Extract unique sources and destinations
+        const sources = new Set();
+        const destinations = new Set();
+        
+        rides.forEach(ride => {
+          if (ride.source && ride.source.trim()) {
+            sources.add(ride.source.trim());
+          }
+          if (ride.destination && ride.destination.trim()) {
+            destinations.add(ride.destination.trim());
+          }
+        });
+        
+        // Combine and convert to array, sorted alphabetically
+        const allLocations = Array.from(new Set([...sources, ...destinations])).sort();
+        setDatabaseLocations(allLocations);
+      } catch (error) {
+        console.error("Error fetching locations from database:", error);
+        // Keep empty array, will fallback to popular locations
+        setDatabaseLocations([]);
+      } finally {
+        setLoadingLocations(false);
+      }
+    };
+
+    fetchLocations();
+  }, []);
+
   // Sync with external value
   useEffect(() => {
     setInputValue(value || "");
@@ -58,18 +98,32 @@ export default function LocationAutocomplete({
     }
 
     const query = inputValue.toLowerCase().trim();
-    const filtered = POPULAR_LOCATIONS.filter(location =>
+    
+    // First, search in database locations (actual rides)
+    const dbFiltered = databaseLocations.filter(location =>
       location.toLowerCase().includes(query)
-    ).slice(0, 8); // Limit to 8 suggestions
-
-    // Also search in recent searches
+    );
+    
+    // Then search in popular locations (fallback)
+    const popularFiltered = POPULAR_LOCATIONS.filter(location =>
+      location.toLowerCase().includes(query) && 
+      !databaseLocations.includes(location)
+    );
+    
+    // Combine: database locations first, then popular locations
+    const allFiltered = [...dbFiltered, ...popularFiltered];
+    
+    // Also search in recent searches (prioritize them)
     const recentFiltered = recentSearches.filter(location =>
       location.toLowerCase().includes(query) && 
-      !filtered.includes(location)
-    ).slice(0, 3);
-
-    setSuggestions([...recentFiltered, ...filtered]);
-  }, [inputValue, recentSearches]);
+      !allFiltered.includes(location)
+    );
+    
+    // Combine: recent first, then database, then popular (limit to 10 total)
+    const combined = [...recentFiltered, ...allFiltered].slice(0, 10);
+    
+    setSuggestions(combined);
+  }, [inputValue, recentSearches, databaseLocations]);
 
   const handleInputChange = (e) => {
     const newValue = e.target.value;

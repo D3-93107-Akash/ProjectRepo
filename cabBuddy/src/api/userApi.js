@@ -25,3 +25,7 @@ export const getUsersByRole = (role) => {
   return api.get(`/users/role/${role}`);
 };
 
+// DELETE USER ✅
+export const deleteUser = (userId) => {
+  return api.delete(`/users/${userId}`);
+};

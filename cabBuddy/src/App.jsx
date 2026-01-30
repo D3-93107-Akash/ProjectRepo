@@ -1,4 +1,6 @@
 import { Routes, Route, Navigate } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import Navbar from "./components/Navbar";
 
 // Pages
@@ -14,9 +16,17 @@ import RequestBooking from "./pages/requestbooking";
 import Bookings from "./pages/Bookings";
 import Logout from "./pages/Logout";
 
+// Admin
+import AdminLayout from "./components/Admin/AdminLayout";
+import AdminDashboard from "./components/Admin/Dashboard";
+import AdminUsers from "./components/Admin/User";
+import AdminRides from "./components/Admin/Rides";
+import AdminPayments from "./components/Admin/Payments";
+
 // Route Guards
 import ProtectedRoute from "./routes/ProtectedRoute";
 import DriverRoute from "./routes/DriverRoute";
+import AdminRoute from "./routes/AdminRoute"; // new for admin
 
 function App() {
   return (
@@ -24,12 +34,12 @@ function App() {
       <Navbar />
 
       <Routes>
-        {/* 🔑 Public */}
+        {/* 🔑 Public Routes */}
         <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignupPage />} />
 
-        {/* 🔒 Protected Pages */}
+        {/* 🔒 Protected Routes (Any logged-in user) */}
         <Route
           path="/home"
           element={
@@ -87,7 +97,7 @@ function App() {
           }
         />
 
-        {/* 🚗 Driver Only Pages */}
+        {/* 🚗 Driver Only */}
         <Route
           path="/publish-ride"
           element={
@@ -97,12 +107,29 @@ function App() {
           }
         />
 
+        {/* 🛡️ Admin Only - Layout with nested routes */}
+        <Route
+          path="/admin"
+          element={
+            <AdminRoute>
+              <AdminLayout />
+            </AdminRoute>
+          }
+        >
+          <Route index element={<Navigate to="/admin/dashboard" replace />} />
+          <Route path="dashboard" element={<AdminDashboard />} />
+          <Route path="users" element={<AdminUsers />} />
+          <Route path="rides" element={<AdminRides />} />
+          <Route path="payments" element={<AdminPayments />} />
+        </Route>
+
         {/* 🔓 Logout */}
         <Route path="/logout" element={<Logout />} />
 
-        {/* ❌ Fallback */}
+        {/* ❌ Fallback - show login so page is never blank */}
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
+      <ToastContainer position="top-right" autoClose={3000} />
     </>
   );
 }

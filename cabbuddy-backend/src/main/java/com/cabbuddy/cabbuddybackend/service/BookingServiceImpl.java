@@ -75,6 +75,14 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    public List<BookingResponseDTO> getAllBookings() {
+        return bookingRepository.findAll()
+                .stream()
+                .map(this::mapToResponseDTO)
+                .toList();
+    }
+
+    @Override
     public void cancelBooking(Long bookingId) {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new RuntimeException("Booking not found"));
