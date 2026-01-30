@@ -46,6 +46,9 @@ public class SecurityConfig {
                 .requestMatchers("/api/users/**").permitAll()
                 .requestMatchers("/swagger-ui/**").permitAll()
                 .requestMatchers("/v3/api-docs/**").permitAll()
+                
+             // 🔐 Payments require login
+                .requestMatchers("/api/payments/**").authenticated()
 
                 // 🔐 Driver-only endpoint
                 .requestMatchers("/api/bookings/ride/**").hasRole("DRIVER")

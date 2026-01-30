@@ -7,6 +7,7 @@
 export const getCurrentUserId = () => {
   const token = localStorage.getItem("token");
 
+  console.log(JSON.parse(atob(token.split(".")[1])));
   if (!token) {
     console.warn("JWT token not found in localStorage");
     return null;
@@ -26,6 +27,8 @@ export const getCurrentUserId = () => {
     console.error("Failed to decode JWT", error);
     return null;
   }
+
+ 
 };
 
 
