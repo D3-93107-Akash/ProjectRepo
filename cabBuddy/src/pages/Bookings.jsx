@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { fetchUserBookings, cancelBooking } from "../api/bookingApi";
 import { fetchBookingById } from "../api/bookingApi";
 import { getCurrentUserId } from "../config/auth";
+import { toast } from "react-toastify";
 
 
 /**
@@ -65,9 +66,11 @@ const Bookings = () => {
     setBookings((prevBookings) =>
       prevBookings.filter((b) => b.bookingId !== bookingId)
     );
+    
+    toast.success("Booking cancelled successfully.");
   } catch (err) {
     console.error("Failed to cancel booking:", err);
-    alert("Failed to cancel booking. Please try again.");
+    toast.error("Failed to cancel booking. Please try again.");
   }
 };
 
