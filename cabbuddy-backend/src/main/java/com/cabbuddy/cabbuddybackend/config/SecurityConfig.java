@@ -35,14 +35,16 @@ public class SecurityConfig {
 
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
-                // ✅ PUBLIC
-                .requestMatchers(
-                    "/api/auth/**",
-                    "/api/rides/**",
-                    "/api/vehicles/**",
-                    "/swagger-ui/**",
-                    "/v3/api-docs/**"
-                ).permitAll()
+                // ✅ Public endpoints
+                .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers("/api/rides/**").permitAll()
+                .requestMatchers("/api/vehicles/**").hasRole("DRIVER")
+                .requestMatchers("/api/users/**").permitAll()
+                .requestMatchers("/swagger-ui/**").permitAll()
+                .requestMatchers("/v3/api-docs/**").permitAll()
+                
+                // 🔐 Payments require login
+                .requestMatchers("/api/payments/**").authenticated()
 
                 // 🔐 DRIVER ONLY
                 .requestMatchers("/api/bookings/ride/**").hasRole("DRIVER")

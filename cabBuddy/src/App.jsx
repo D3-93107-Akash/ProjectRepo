@@ -15,6 +15,8 @@ import SelectRoute from "./pages/SelectRoute";
 import RequestBooking from "./pages/requestbooking";
 import Bookings from "./pages/Bookings";
 import Logout from "./pages/Logout";
+import Checkout from "@/pages/Checkout";
+import PaymentFailed from "@/pages/PaymentFailed";
 
 // Admin
 import AdminLayout from "./components/Admin/AdminLayout";
@@ -22,6 +24,12 @@ import AdminDashboard from "./components/Admin/Dashboard";
 import AdminUsers from "./components/Admin/User";
 import AdminRides from "./components/Admin/Rides";
 import AdminPayments from "./components/Admin/Payments";
+// Profile verification components
+import PhoneVerificationPage from "./components/profile/PhoneVerificationPage";
+import EmailVerificationPage from "./components/profile/EmailVerificationPage";
+import GovtIdVerificationPage from "./components/profile/GovtIdVerificationPage";
+import DrivingLicenseVerificationPage from "./components/profile/DrivingLicenseVerificationPage";
+import Vehicle from "./components/profile/Vehicle";
 
 // Route Guards
 import ProtectedRoute from "./routes/ProtectedRoute";
@@ -124,6 +132,24 @@ function App() {
         </Route>
 
         {/* 🔓 Logout */}
+        {/* Public pages */}
+        <Route path="/" element={<Home />} />
+        <Route path="/logout" element={<Logout />} />
+
+        {/* Profile + nested routes */}
+        <Route path="/profile" element={<Profile />}>
+          <Route path="vehicle" element={<Vehicle />} />
+        </Route>
+
+        {/* Verification pages */}
+        <Route path="/verify/phone" element={<PhoneVerificationPage />} />
+        <Route path="/verify/email" element={<EmailVerificationPage />} />
+        <Route path="/verify/govt-id" element={<GovtIdVerificationPage />} />
+        <Route path="/verify/driving-license" element={<DrivingLicenseVerificationPage />} />
+        <Route path="/my-bookings" element={<Bookings />} />
+         {/* ADD THIS */}
+        <Route path="/checkout" element={<Checkout />} />
+        <Route path="/payment-failed" element={<PaymentFailed />} />
         <Route path="/logout" element={<Logout />} />
 
         {/* ❌ Fallback - show login so page is never blank */}
