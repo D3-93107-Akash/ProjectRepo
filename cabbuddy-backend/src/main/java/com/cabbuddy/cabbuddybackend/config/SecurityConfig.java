@@ -25,18 +25,14 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
-            // ✅ CSRF disabled (JWT is stateless)
             .csrf(csrf -> csrf.disable())
 
-            // ✅ Stateless session
             .sessionManagement(session ->
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )
 
-            // ✅ Endpoint security
             .authorizeHttpRequests(auth -> auth
 
-                // ✅ Allow preflight requests
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
                 // ✅ Public endpoints
@@ -47,27 +43,24 @@ public class SecurityConfig {
                 .requestMatchers("/swagger-ui/**").permitAll()
                 .requestMatchers("/v3/api-docs/**").permitAll()
                 
-             // 🔐 Payments require login
+                // 🔐 Payments require login
                 .requestMatchers("/api/payments/**").authenticated()
 
-                // 🔐 Driver-only endpoint
+                // 🔐 DRIVER ONLY
                 .requestMatchers("/api/bookings/ride/**").hasRole("DRIVER")
 
-                // 🔐 Everything else requires authentication
+                // 🔐 EVERYTHING ELSE
                 .anyRequest().authenticated()
             )
 
-            // ❌ Disable default login forms
             .formLogin(form -> form.disable())
             .httpBasic(basic -> basic.disable())
 
-            // ✅ JWT filter
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
 
-    // 🔐 Password encoder
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

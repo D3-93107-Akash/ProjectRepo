@@ -1,5 +1,6 @@
 package com.cabbuddy.cabbuddybackend.dto;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -10,23 +11,19 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class RideCreateResponse {
+public class RideCreateResponse implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     private Long id;
     private String source;
     private String destination;
     private LocalDate rideDate;
-    
-    // Departure time (pickup time) - REPLACES rideTime
     private LocalTime departureTime;
-    
-    // Arrival time (drop-off time)
     private LocalTime arrivalTime;
-    
     private int availableSeats;
     private double pricePerSeat;
     private RideStatus status;
-
     private Long driverId;
     private String driverName;
+    
 }

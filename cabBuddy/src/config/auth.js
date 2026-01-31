@@ -27,8 +27,6 @@ export const getCurrentUserId = () => {
     console.error("Failed to decode JWT", error);
     return null;
   }
-
- 
 };
 
 

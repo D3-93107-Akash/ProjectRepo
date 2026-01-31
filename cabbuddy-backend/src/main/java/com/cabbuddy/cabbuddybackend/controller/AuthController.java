@@ -27,25 +27,25 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
 
-        // 1️⃣ Find active user
+        // 1️ Find active user
         User user = userRepository.findByEmailAndActiveTrue(request.getEmail())
                 .orElseThrow(() -> new RuntimeException("User not found or inactive"));
 
-        // 2️⃣ Validate password
+        // 2️ Validate password
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             return ResponseEntity
                     .status(HttpStatus.UNAUTHORIZED)
                     .body("Invalid credentials");
         }
 
-        // 3️⃣ Generate JWT token (✅ FIXED: includes userId)
+        // 3️ Generate JWT token ( FIXED: includes userId)
         String token = jwtUtil.generateToken(
-                user.getId(),            // ✅ IMPORTANT
+                user.getId(),            //  IMPORTANT
                 user.getEmail(),
                 user.getRole().name()
         );
 
-        // 4️⃣ Build response payload
+        // 4️ Build response payload
         LoginResponse response = new LoginResponse();
         response.setId(user.getId());
         response.setToken(token);

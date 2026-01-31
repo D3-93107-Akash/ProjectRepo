@@ -1,23 +1,23 @@
-import { useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 function Logout() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   useEffect(() => {
-    // Clear authentication token
-    localStorage.removeItem('token')
-    // Redirect to home page
-    navigate('/')
-  }, [navigate])
+    // ✅ CLEAR EVERYTHING
+    localStorage.clear();
+
+    console.log("✅ Logged out");
+
+    navigate("/login", { replace: true });
+  }, [navigate]);
 
   return (
     <div className="flex items-center justify-center min-h-screen">
-      <div className="text-center">
-        <p className="text-gray-600">Logging out...</p>
-      </div>
+      <p className="text-gray-600">Logging out...</p>
     </div>
-  )
+  );
 }
 
-export default Logout
+export default Logout;

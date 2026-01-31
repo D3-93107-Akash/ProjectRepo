@@ -374,6 +374,16 @@ export default function ProfileOverview({ user }) {
               />
             </div>
 
+            {/* <div className="space-y-1">
+              <label className="text-xs text-slate-600">City</label>
+              <Input
+                name="city"
+                value={formData.city}
+                onChange={handleChange}
+                placeholder="Your city"
+              />
+            </div> */}
+
             <div className="md:col-span-3 flex justify-end">
               <Button
                 type="button"

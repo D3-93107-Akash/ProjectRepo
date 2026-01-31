@@ -6,37 +6,52 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Card, CardContent } from "@/components/ui/card";
-import api from "@/api/axiosInstance"; // Axios instance
+import api from "@/api/axiosInstance";
 
 export default function Login() {
   const navigate = useNavigate();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
   async function handleLogin(e) {
     e.preventDefault();
+    setError("");
 
     if (!email || !password) {
-      alert("Please fill all fields");
+      setError("Please fill all fields");
       return;
     }
 
     try {
-      // Call backend login API
-      const res = await api.post("/auth/login", { email, password });
+      const res = await api.post("/auth/login", {
+        email,
+        password,
+      });
 
-      const token = res.data.token;
-      const role = res.data.role; // ✅ REQUIRED CHANGE
+      const data = res.data;
 
-      // Store JWT + role in localStorage
-      localStorage.setItem("token", token);
-      localStorage.setItem("role", role); // ✅ REQUIRED CHANGE
+      // Store auth data
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("authToken", data.token);
+      localStorage.setItem("user", JSON.stringify(data));
 
-      navigate("/"); // redirect after login
+      console.log("✅ LOGIN SUCCESS", data);
+
+      // Redirect: admin → admin dashboard, else home
+      if (data.role === "ADMIN") {
+        navigate("/admin/dashboard", { replace: true });
+      } else {
+        navigate("/home", { replace: true });
+      }
+
     } catch (err) {
-      console.error(err);
-      setError(err.response?.data || "Login failed");
+      console.error("❌ Login failed:", err);
+      setError(
+        err.response?.data?.message ||
+        "Login failed"
+      );
     }
   }
 
@@ -45,7 +60,6 @@ export default function Login() {
       <Card className="w-full max-w-md shadow-sm border border-gray-200 rounded-2xl">
         <CardContent className="p-8 space-y-6">
 
-          {/* TOP HEADING */}
           <div className="text-center space-y-1">
             <h1 className="text-2xl font-bold text-gray-900">
               Welcome back 👋
@@ -55,83 +69,41 @@ export default function Login() {
             </p>
           </div>
 
-          {/* FORM */}
           <form className="space-y-4" onSubmit={handleLogin}>
-
             <div className="space-y-1">
-              <Label htmlFor="email" className="text-gray-700">Email</Label>
+              <Label>Email</Label>
               <Input
-                id="email"
                 type="email"
-                placeholder="you@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="rounded-lg"
               />
             </div>
 
             <div className="space-y-1">
-              <div className="flex items-center">
-                <Label htmlFor="password" className="text-gray-700">Password</Label>
-                <a className="ml-auto text-sm text-blue-600 hover:underline cursor-pointer">
-                  Forgot password?
-                </a>
-              </div>
+              <Label>Password</Label>
               <Input
-                id="password"
                 type="password"
-                placeholder="•••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="rounded-lg"
               />
             </div>
 
-            {/* LOGIN BUTTON */}
-            <Button
-              type="submit"
-              className="
-                w-full h-12 rounded-full 
-                bg-[#4285F4] 
-                hover:bg-[#357AE8] 
-                text-white 
-                flex items-center justify-center gap-3
-                transition
-              "
-            >
-              <span className="text-white font-medium">Login</span>
+            <Button className="w-full h-12 rounded-full">
+              Login
             </Button>
 
-            {error && <p className="text-red-600 text-sm mt-2">{error}</p>}
-
+            {error && (
+              <p className="text-red-600 text-sm text-center">
+                {error}
+              </p>
+            )}
           </form>
 
           <Separator />
 
-          {/* SOCIAL LOGIN */}
-          <div className="text-center text-sm text-gray-500 mb-2">
-            Or continue with
-          </div>
-
-          <div className="grid grid-cols-1 gap-3">
-            <Button
-              className="
-                w-full h-12 rounded-full 
-                bg-[#4285F4] 
-                hover:bg-[#357AE8] 
-                text-white 
-                flex items-center justify-center gap-3
-                transition
-              "
-            >
-              <span className="text-white font-medium">Sign up with Google</span>
-            </Button>
-          </div>
-
-          {/* SIGNUP LINK */}
-          <p className="text-center text-sm text-gray-600">
+          <p className="text-center text-sm">
             Don't have an account?{" "}
-            <Link to="/signup" className="text-blue-600 hover:underline cursor-pointer">
+            <Link to="/signup" className="text-blue-600">
               Sign up
             </Link>
           </p>

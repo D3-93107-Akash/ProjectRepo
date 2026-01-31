@@ -1,12 +1,22 @@
 import { Link } from "react-router-dom"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Search, Plus, ChevronDown, Menu } from "lucide-react"
+import { Search, Plus, ChevronDown, Menu, Shield } from "lucide-react"
 import { useState } from "react"
 
+function getStoredUser() {
+  try {
+    const u = localStorage.getItem("user")
+    return u ? JSON.parse(u) : null
+  } catch {
+    return null
+  }
+}
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const user = getStoredUser()
+  const isAdmin = user?.role === "ADMIN"
 
   return (
     <header className="bg-white shadow-sm sticky top-0 z-50">
@@ -39,6 +49,16 @@ export default function Navbar() {
               <Plus className="h-5 w-5 mr-1" />
               Publish a ride
             </Link>
+
+            {isAdmin && (
+              <Link
+                to="/admin/dashboard"
+                className="flex items-center text-amber-600 font-medium hover:text-amber-700"
+              >
+                <Shield className="h-5 w-5 mr-1" />
+                Admin
+              </Link>
+            )}
           </nav>
 
          
@@ -104,6 +124,16 @@ export default function Navbar() {
             <Plus className="h-5 w-5 mr-2" />
             Publish a ride
           </Link>
+          {isAdmin && (
+            <Link
+              to="/admin/dashboard"
+              className="flex items-center text-amber-600 font-medium hover:text-amber-700"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              <Shield className="h-5 w-5 mr-2" />
+              Admin
+            </Link>
+          )}
         </div>
       )}
     </header>

@@ -7,20 +7,13 @@ const axiosInstance = axios.create({
   },
 });
 
-// 🔐 Attach token to every request
-axiosInstance.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem("token");
-
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
+// Interceptor to add JWT token automatically
+api.interceptors.request.use(config => {
+  const token = localStorage.getItem("token");
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
   }
-);
+  return config;
+});
 
-export default axiosInstance;
+export default api;
