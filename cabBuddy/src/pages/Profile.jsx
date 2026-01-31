@@ -406,7 +406,7 @@ export default function Profile() {
     JSON.parse(localStorage.getItem("auth"));
 
   const role = loginData?.role?.toUpperCase();
-  const isDriver = role === "DRIVER";
+  const isRoleDriver = role === "DRIVER";
   const userId = loginData?.id;
 
   /* =========================
@@ -488,10 +488,10 @@ export default function Profile() {
      📡 FETCH DRIVER RIDES
      ========================= */
   useEffect(() => {
-    if (activeSection === "rides" && isDriver) {
+    if (activeSection === "rides" && isRoleDriver) {
       fetchMyRides();
     }
-  }, [activeSection, isDriver]);
+  }, [activeSection, isRoleDriver]);
 
   const fetchMyRides = async () => {
     if (!userId) return;
@@ -620,7 +620,7 @@ export default function Profile() {
       case "rides":
         return (
           <div className="space-y-6">
-            {!isDriver && (
+            {!isRoleDriver && (
               <Card className="p-10 text-center bg-yellow-50 border-yellow-200 rounded-2xl">
                 <h3 className="text-lg font-semibold text-yellow-800 mb-2">
                   Driver access only
@@ -631,7 +631,7 @@ export default function Profile() {
               </Card>
             )}
 
-            {isDriver && (
+            {isRoleDriver && (
               <>
                 <div className="flex justify-between items-center">
                   <div>
@@ -756,13 +756,13 @@ export default function Profile() {
               onClick={() => setActiveSection("rides")}
             />
             {(isDriver() || isAdmin()) && (
-  <SidebarItem
-    label="Add Vehicle"
-    icon={Car}
-    isActive={activeSection === "vehicle"}
-    onClick={() => setActiveSection("vehicle")}
-  />
-)}
+              <SidebarItem
+                label="Add Vehicle"
+                icon={Car}
+                isActive={activeSection === "vehicle"}
+                onClick={() => setActiveSection("vehicle")}
+              />
+            )}
 
           </aside>
 

@@ -48,6 +48,7 @@
 import { useStripe, useElements, PaymentElement } from "@stripe/react-stripe-js";
 import { useNavigate, useLocation } from "react-router-dom";
 import { createBooking } from "@/api/bookingApi";
+import { useState } from "react";
 
 export default function PaymentForm() {
   const stripe = useStripe();
@@ -57,26 +58,38 @@ export default function PaymentForm() {
 
   const { rideId, seatsBooked } = state || {};
 
+  const [isProcessing, setIsProcessing] = useState(false);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!stripe || !elements) return;
 
-    const { error } = await stripe.confirmPayment({
-      elements,
-      confirmParams: {
-        return_url: "http://localhost:5173/my-bookings",
-      },
-      redirect: "if_required",
-    });
 
-    if (error) {
-      navigate("/payment-failed");
-      return;
+    try {
+      setIsProcessing(true);
+      const { error } = await stripe.confirmPayment({
+        elements,
+        confirmParams: {
+          return_url: "http://localhost:5173/my-bookings",
+        },
+        redirect: "if_required",
+      });
+
+      if (error) {
+        navigate("/payment-failed");
+        return;
+      }
+
+      await createBooking({ rideId, seatsBooked });
+      navigate("/my-bookings");
+
+    } catch (e) {
+      // handle the error
+      console.error(e);
+    } finally {
+      setIsProcessing(false);
     }
-
-    await createBooking({ rideId, seatsBooked });
-    navigate("/my-bookings");
   };
 
   return (
@@ -94,7 +107,7 @@ export default function PaymentForm() {
       <PaymentElement />
       <button
         type="submit"
-        disabled={!stripe}
+        disabled={!stripe || isProcessing}
         style={{
           marginTop: 20,
           width: "100%",
