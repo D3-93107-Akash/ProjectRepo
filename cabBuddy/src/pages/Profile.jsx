@@ -1,371 +1,3 @@
-// // import { useState, useEffect } from "react";
-// // import { useLocation } from "react-router-dom";
-
-// // import { Card } from "@/components/ui/card";
-// // import SidebarItem from "@/components/profile/SidebarItem";
-// // import ProfileOverview from "@/components/profile/ProfileOverview";
-// // import ProfileVerification from "@/components/profile/ProfileVerification";
-// // import ProfileRatings from "@/components/profile/ProfileRatings";
-
-// // import { User, ShieldCheck, Star, Car } from "lucide-react";
-
-// // export default function Profile() {
-// //   const [activeSection, setActiveSection] = useState("overview");
-
-// //   const [phone, setPhone] = useState("7666****27");
-// //   const [email, setEmail] = useState("nikhil@example.com");
-
-// //   // ✅ Load verified state from sessionStorage (per session)
-// //   const [verifiedState, setVerifiedState] = useState(() => {
-// //     const saved = sessionStorage.getItem("verifiedState");
-// //     return saved
-// //       ? JSON.parse(saved)
-// //       : {
-// //           phone: false,
-// //           email: false,
-// //           govtId: false,
-// //           drivingLicense: false,
-// //         };
-// //   });
-
-// //   const location = useLocation();
-
-// //   useEffect(() => {
-// //     if (location.state?.verified) {
-// //       setVerifiedState((prev) => {
-// //         const updated = {
-// //           ...prev,
-// //           ...location.state.verified, // ✅ merge (never overwrite)
-// //         };
-
-// //         // ✅ persist for session only
-// //         sessionStorage.setItem("verifiedState", JSON.stringify(updated));
-// //         return updated;
-// //       });
-// //     }
-
-// //     if (location.state?.phone) {
-// //       setPhone(location.state.phone);
-// //     }
-
-// //     if (location.state?.email) {
-// //       setEmail(location.state.email);
-// //     }
-// //   }, [location]);
-
-// //   const user = {
-// //     phone: phone,
-// //     email: email,
-// //     verified: verifiedState,
-// //   };
-
-// //   const renderSection = () => {
-// //     switch (activeSection) {
-// //       case "overview":
-// //         return (
-// //           <div className="animate-fadeIn space-y-6">
-// //             <ProfileOverview user={user} />
-// //             <ProfileVerification user={user} />
-// //           </div>
-// //         );
-
-// //       case "verification":
-// //         return (
-// //           <div className="animate-fadeIn">
-// //             <ProfileVerification user={user} />
-// //           </div>
-// //         );
-
-// //       case "rating":
-// //         return (
-// //           <div className="animate-fadeIn">
-// //             <ProfileRatings />
-// //           </div>
-// //         );
-
-// //       case "rides":
-// //         return (
-// //           <Card className="animate-fadeIn p-6 rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-100 shadow-md hover:shadow-lg transition">
-// //             <h2 className="text-lg font-semibold text-blue-900 mb-2">
-// //               My Rides
-// //             </h2>
-// //             <p className="text-sm text-slate-600">
-// //               Your ride history will appear here.
-// //             </p>
-// //           </Card>
-// //         );
-
-// //       default:
-// //         return null;
-// //     }
-// //   };
-
-// //   return (
-// //     <div className="min-h-[calc(100vh-64px)] bg-gradient-to-br from-blue-50 via-sky-50 to-indigo-50 py-10 flex justify-center items-start">
-// //       <Card className="w-full max-w-5xl mx-auto p-8 shadow-2xl rounded-3xl bg-white/90 backdrop-blur border border-blue-100">
-// //         <h1 className="text-2xl md:text-2xl font-semibold text-blue-900 text-center mb-8">
-// //           My Account
-// //         </h1>
-
-// //         <div className="grid gap-6 md:grid-cols-[260px,1fr]">
-// //           {/* Sidebar */}
-// //           <aside className="bg-gradient-to-b from-blue-100 to-blue-50 rounded-2xl p-5 space-y-3 text-blue-900 shadow-lg">
-// //             <SidebarItem
-// //               label="Overview"
-// //               icon={User}
-// //               isActive={activeSection === "overview"}
-// //               onClick={() => setActiveSection("overview")}
-// //             />
-
-// //             <SidebarItem
-// //               label="Verification"
-// //               icon={ShieldCheck}
-// //               isActive={activeSection === "verification"}
-// //               onClick={() => setActiveSection("verification")}
-// //             />
-
-// //             <SidebarItem
-// //               label="Rating"
-// //               icon={Star}
-// //               isActive={activeSection === "rating"}
-// //               onClick={() => setActiveSection("rating")}
-// //             />
-
-// //             <SidebarItem
-// //               label="My Rides"
-// //               icon={Car}
-// //               isActive={activeSection === "rides"}
-// //               onClick={() => setActiveSection("rides")}
-// //             />
-// //           </aside>
-
-// //           {/* Main Content */}
-// //           <main className="space-y-6 transition-all duration-300">
-// //             <h1 className="text-xl md:text-2xl font-semibold text-blue-900 border-b border-blue-100 pb-4">
-// //               My Profile
-// //             </h1>
-
-// //             {renderSection()}
-// //           </main>
-// //         </div>
-// //       </Card>
-
-// //       <style>{`
-// //         .animate-fadeIn {
-// //           animation: fadeIn 0.45s ease-in-out;
-// //         }
-// //         @keyframes fadeIn {
-// //           from { opacity: 0; transform: translateY(10px); }
-// //           to { opacity: 1; transform: translateY(0); }
-// //         }
-// //       `}</style>
-// //     </div>
-// //   );
-// // }
-
-// import { useState, useEffect } from "react";
-// import { useLocation } from "react-router-dom";
-
-// import { Card } from "@/components/ui/card";
-// import SidebarItem from "@/components/profile/SidebarItem";
-// import ProfileOverview from "@/components/profile/ProfileOverview";
-// import ProfileVerification from "@/components/profile/ProfileVerification";
-// import ProfileRatings from "@/components/profile/ProfileRatings";
-
-// import { User, ShieldCheck, Star, Car } from "lucide-react";
-
-// import { fetchUserById } from "@/api/userfetchApi";
-
-// export default function Profile() {
-//   const [activeSection, setActiveSection] = useState("overview");
-
-//   // Backend user profile
-//   const [userProfile, setUserProfile] = useState(null);
-
-//   // Verification state (session-based)
-//   const [verifiedState, setVerifiedState] = useState(() => {
-//     const saved = sessionStorage.getItem("verifiedState");
-//     return saved
-//       ? JSON.parse(saved)
-//       : {
-//           phone: false,
-//           email: false,
-//           govtId: false,
-//           drivingLicense: false,
-//         };
-//   });
-
-//   const location = useLocation();
-
-//   /* --------------------------------------------------
-//      Fetch user profile (GET /api/users/{id})
-//   -------------------------------------------------- */
-//   useEffect(() => {
-//     const loadUserProfile = async () => {
-//       try {
-//         const response = await fetchUserById();
-//         setUserProfile(response.data);
-//       } catch (error) {
-//         console.error("Failed to load user profile", error);
-//       }
-//     };
-
-//     loadUserProfile();
-//   }, []);
-
-//   /* --------------------------------------------------
-//      Handle verification updates via navigation state
-//   -------------------------------------------------- */
-//   useEffect(() => {
-//     if (location.state?.verified) {
-//       setVerifiedState((prev) => {
-//         const updated = {
-//           ...prev,
-//           ...location.state.verified, // merge, never overwrite
-//         };
-
-//         sessionStorage.setItem(
-//           "verifiedState",
-//           JSON.stringify(updated)
-//         );
-//         return updated;
-//       });
-//     }
-//   }, [location]);
-
-//   /* --------------------------------------------------
-//      Loading Guard
-//   -------------------------------------------------- */
-//   if (!userProfile) {
-//     return (
-//       <div className="min-h-[calc(100vh-64px)] flex items-center justify-center">
-//         <p className="text-blue-700">Loading profile...</p>
-//       </div>
-//     );
-//   }
-
-//   /* --------------------------------------------------
-//      User object passed to child components
-//      (STRICTLY aligned with UserResponseDTO)
-//   -------------------------------------------------- */
-//   const user = {
-//     name: userProfile.name,
-//     email: userProfile.email,
-//     phone: userProfile.phone,
-//     verified: verifiedState,
-//   };
-
-//   /* --------------------------------------------------
-//      Section Renderer
-//   -------------------------------------------------- */
-//   const renderSection = () => {
-//     switch (activeSection) {
-//       case "overview":
-//         return (
-//           <div className="animate-fadeIn space-y-6">
-//             <ProfileOverview user={user} />
-//             <ProfileVerification user={user} />
-//           </div>
-//         );
-
-//       case "verification":
-//         return (
-//           <div className="animate-fadeIn">
-//             <ProfileVerification user={user} />
-//           </div>
-//         );
-
-//       case "rating":
-//         return (
-//           <div className="animate-fadeIn">
-//             <ProfileRatings />
-//           </div>
-//         );
-
-//       case "rides":
-//         return (
-//           <Card className="animate-fadeIn p-6 rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-100 shadow-md hover:shadow-lg transition">
-//             <h2 className="text-lg font-semibold text-blue-900 mb-2">
-//               My Rides
-//             </h2>
-//             <p className="text-sm text-slate-600">
-//               Your ride history will appear here.
-//             </p>
-//           </Card>
-//         );
-
-//       default:
-//         return null;
-//     }
-//   };
-
-//   /* --------------------------------------------------
-//      Main Render
-//   -------------------------------------------------- */
-//   return (
-//     <div className="min-h-[calc(100vh-64px)] bg-gradient-to-br from-blue-50 via-sky-50 to-indigo-50 py-10 flex justify-center items-start">
-//       <Card className="w-full max-w-5xl mx-auto p-8 shadow-2xl rounded-3xl bg-white/90 backdrop-blur border border-blue-100">
-//         <h1 className="text-2xl md:text-2xl font-semibold text-blue-900 text-center mb-8">
-//           My Account
-//         </h1>
-
-//         <div className="grid gap-6 md:grid-cols-[260px,1fr]">
-//           {/* Sidebar */}
-//           <aside className="bg-gradient-to-b from-blue-100 to-blue-50 rounded-2xl p-5 space-y-3 text-blue-900 shadow-lg">
-//             <SidebarItem
-//               label="Overview"
-//               icon={User}
-//               isActive={activeSection === "overview"}
-//               onClick={() => setActiveSection("overview")}
-//             />
-
-//             <SidebarItem
-//               label="Verification"
-//               icon={ShieldCheck}
-//               isActive={activeSection === "verification"}
-//               onClick={() => setActiveSection("verification")}
-//             />
-
-//             <SidebarItem
-//               label="Rating"
-//               icon={Star}
-//               isActive={activeSection === "rating"}
-//               onClick={() => setActiveSection("rating")}
-//             />
-
-//             <SidebarItem
-//               label="My Rides"
-//               icon={Car}
-//               isActive={activeSection === "rides"}
-//               onClick={() => setActiveSection("rides")}
-//             />
-//           </aside>
-
-//           {/* Main Content */}
-//           <main className="space-y-6 transition-all duration-300">
-//             <h1 className="text-xl md:text-2xl font-semibold text-blue-900 border-b border-blue-100 pb-4">
-//               My Profile
-//             </h1>
-
-//             {renderSection()}
-//           </main>
-//         </div>
-//       </Card>
-
-//       {/* Animations */}
-//       <style>{`
-//         .animate-fadeIn {
-//           animation: fadeIn 0.45s ease-in-out;
-//         }
-//         @keyframes fadeIn {
-//           from { opacity: 0; transform: translateY(10px); }
-//           to { opacity: 1; transform: translateY(0); }
-//         }
-//       `}</style>
-//     </div>
-//   );
-// }
-
 import { useState, useEffect } from "react";
 import { useLocation, Link } from "react-router-dom";
 import { Card } from "@/components/ui/card";
@@ -382,16 +14,18 @@ import { Outlet } from "react-router-dom";
 import Vehicle from "@/components/profile/Vehicle";
 import { isDriver, isAdmin } from "@/config/auth";
 
-
-
-
 // ✅ UPDATED IMPORT
 import {
   fetchUserById,
   updateUserProfile,
 } from "@/api/userfetchApi";
 
+/**
+ * Profile Component
+ * Manages user profile data, verification status, and driver-specific ride listings.
+ */
 export default function Profile() {
+  // State to track the currently selected sidebar section
   const [activeSection, setActiveSection] = useState("overview");
   
   const [phone, setPhone] = useState("7666****27");
@@ -420,36 +54,84 @@ export default function Profile() {
      ✅ VERIFIED STATE
      ========================= */
 
+<<<<<<< Updated upstream
   // Backend user profile
+=======
+  /* =========================
+      🔐 READ LOGIN DATA
+      ========================= */
+  // Attempt to retrieve user authentication data from multiple possible localStorage keys
+  const loginData =
+    JSON.parse(localStorage.getItem("user")) ||
+    JSON.parse(localStorage.getItem("loginResponse")) ||
+    JSON.parse(localStorage.getItem("auth"));
+
+  const role = loginData?.role?.toUpperCase();
+  const isRoleDriver = role === "DRIVER";
+  const userId = loginData?.id;
+
+  /* =========================
+      🚗 MY RIDES STATE
+      ========================= */
+  const [myRides, setMyRides] = useState([]);
+  const [ridesLoading, setRidesLoading] = useState(false);
+  const [ridesError, setRidesError] = useState(null);
+
+  /* =========================
+      ✅ PROFILE STATE
+      ========================= */
+  // Holds the core user data fetched from the backend
+>>>>>>> Stashed changes
   const [userProfile, setUserProfile] = useState(null);
 
-  // Edit mode
+  // Toggle for profile editing mode
   const [isEditing, setIsEditing] = useState(false);
+  // Temporary state for the profile edit form fields
   const [editForm, setEditForm] = useState({
     name: "",
     phone: "",
   });
 
-  // Verification state (session-based)
+  // Hydrate verification state from sessionStorage to persist during the session
+  const verifiedStorageKey = userId ? `verifiedState_${userId}` : "verifiedState";
+
   const [verifiedState, setVerifiedState] = useState(() => {
-    const saved = sessionStorage.getItem("verifiedState");
+    const saved = sessionStorage.getItem(verifiedStorageKey);
+
     return saved
       ? JSON.parse(saved)
       : { phone: false, email: false, govtId: false, drivingLicense: false };
   });
 
   const location = useLocation();
+  
 
   /* --------------------------------------------------
+<<<<<<< HEAD
      Fetch user profile (GET /api/users/{id})
+=======
+<<<<<<< Updated upstream
+     Fetch user profile
+=======
+      Fetch user profile (GET /api/users/{id})
+>>>>>>> Stashed changes
+>>>>>>> 69748f3 (fix(profile): update axios instance and profile page)
   -------------------------------------------------- */
+  // Initial load: Fetch the user's latest profile data from the API
   useEffect(() => {
     const loadUserProfile = async () => {
       try {
         const response = await fetchUserById();
         setUserProfile(response.data);
 
+<<<<<<< HEAD
         // Pre-fill edit form
+=======
+<<<<<<< Updated upstream
+=======
+        // Pre-fill edit form with current data
+>>>>>>> Stashed changes
+>>>>>>> 69748f3 (fix(profile): update axios instance and profile page)
         setEditForm({
           name: response.data.name,
           phone: response.data.phone,
@@ -463,8 +145,9 @@ export default function Profile() {
   }, []);
 
   /* --------------------------------------------------
-     Handle verification updates via navigation state
+      Handle verification updates via navigation state
   -------------------------------------------------- */
+  // Listens for updates passed through react-router-dom's location state (e.g., after a successful verification redirect)
   useEffect(() => {
     if (location.state?.verified) {
       const updated = { ...verifiedState, ...location.state.verified };
@@ -475,24 +158,40 @@ export default function Profile() {
         };
 
         sessionStorage.setItem(
-          "verifiedState",
-          JSON.stringify(updated)
-        );
+  verifiedStorageKey,
+  JSON.stringify(updated)
+);
+
         return updated;
       });
       localStorage.setItem("verifiedState", JSON.stringify(updated));
     }
   }, [location]);
 
+<<<<<<< HEAD
   /* =========================
      📡 FETCH DRIVER RIDES
      ========================= */
+=======
+<<<<<<< Updated upstream
+=======
+  /* =========================
+      📡 FETCH DRIVER RIDES
+      ========================= */
+  // Automatically trigger ride fetch when the user switches to the 'Rides' tab
+>>>>>>> 69748f3 (fix(profile): update axios instance and profile page)
   useEffect(() => {
     if (activeSection === "rides" && isRoleDriver) {
       fetchMyRides();
     }
   }, [activeSection, isRoleDriver]);
 
+<<<<<<< HEAD
+=======
+  /**
+   * Fetches the rides associated with the current driver ID
+   */
+>>>>>>> 69748f3 (fix(profile): update axios instance and profile page)
   const fetchMyRides = async () => {
     if (!userId) return;
 
@@ -501,7 +200,11 @@ export default function Profile() {
 
     try {
       console.log("Fetching rides for driverId:", userId);
+<<<<<<< HEAD
       const response = await getMyRides(); // ✅ Backend hit with driverId + token
+=======
+      const response = await getMyRides(); // ✅ Backend hit
+>>>>>>> 69748f3 (fix(profile): update axios instance and profile page)
       console.log("🚗 My Rides:", response.data);
       setMyRides(Array.isArray(response.data) ? response.data : []);
     } catch (error) {
@@ -514,8 +217,14 @@ export default function Profile() {
   };
 
   /* =========================
+<<<<<<< HEAD
      🏷 STATUS BADGE
      ========================= */
+=======
+      🏷 STATUS BADGE
+      ========================= */
+  // UI helper to render color-coded status pills
+>>>>>>> 69748f3 (fix(profile): update axios instance and profile page)
   const StatusBadge = ({ status }) => {
     const map = {
       active: "bg-green-100 text-green-800",
@@ -534,22 +243,28 @@ export default function Profile() {
     );
   };
 
+<<<<<<< HEAD
   // const user = { phone, email, verified: verifiedState };
 
   /* =========================
      🧩 SECTION RENDERER
      ========================= */
+=======
+>>>>>>> Stashed changes
+>>>>>>> 69748f3 (fix(profile): update axios instance and profile page)
   /* --------------------------------------------------
-     Input Change Handler
+      Input Change Handler
   -------------------------------------------------- */
+  // Synchronizes controlled input fields with editForm state
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setEditForm((prev) => ({ ...prev, [name]: value }));
   };
 
   /* --------------------------------------------------
-     Save Profile
+      Save Profile
   -------------------------------------------------- */
+  // Persists edited profile changes to the server
   const handleSaveProfile = async () => {
     try {
       const response = await updateUserProfile(editForm);
@@ -562,8 +277,9 @@ export default function Profile() {
   };
 
   /* --------------------------------------------------
-     Cancel Editing
+      Cancel Editing
   -------------------------------------------------- */
+  // Reverts the form state to the original profile data and exits edit mode
   const handleCancelEdit = () => {
     setEditForm({
       name: userProfile.name,
@@ -573,8 +289,9 @@ export default function Profile() {
   };
 
   /* --------------------------------------------------
-     Loading Guard
+      Loading Guard
   -------------------------------------------------- */
+  // Prevents rendering the UI until the user profile data is available
   if (!userProfile) {
     return (
       <div className="min-h-[calc(100vh-64px)] flex items-center justify-center">
@@ -584,7 +301,7 @@ export default function Profile() {
   }
 
   /* --------------------------------------------------
-     User object passed to child components
+      User object passed to child components
   -------------------------------------------------- */
   const user = {
     name: userProfile.name,
@@ -594,8 +311,9 @@ export default function Profile() {
   };
 
   /* --------------------------------------------------
-     Section Renderer
+      Section Renderer
   -------------------------------------------------- */
+  // Logic to switch between different views based on the active sidebar selection
   const renderSection = () => {
     switch (activeSection) {
       case "overview":
@@ -612,7 +330,16 @@ export default function Profile() {
         );
 
       case "verification":
+<<<<<<< HEAD
         return <ProfileVerification user={user} />;
+=======
+<<<<<<< Updated upstream
+        return (
+          <div className="animate-fadeIn">
+            <ProfileVerification user={user} />
+          </div>
+        );
+>>>>>>> 69748f3 (fix(profile): update axios instance and profile page)
 
       case "rating":
         return <ProfileRatings />;
@@ -694,6 +421,116 @@ export default function Profile() {
             )}
           </div>
         );
+<<<<<<< HEAD
+=======
+         case "vehicle":
+  if (!isDriver() && !isAdmin()) return null;
+  return (
+    <div className="animate-fadeIn">
+      <Vehicle />
+    </div>
+  );
+
+
+=======
+        return (
+          <div className="animate-fadeIn">
+            <ProfileVerification user={user} />
+          </div>
+        );
+
+      case "rating":
+        return (
+          <div className="animate-fadeIn">
+            <ProfileRatings />
+          </div>
+        );
+
+      case "rides":
+        return (
+          <div className="space-y-6">
+            {!isRoleDriver && (
+              <Card className="p-10 text-center bg-yellow-50 border-yellow-200 rounded-2xl">
+                <h3 className="text-lg font-semibold text-yellow-800 mb-2">
+                  Driver access only
+                </h3>
+                <p className="text-yellow-700">
+                  Only drivers can publish and manage rides.
+                </p>
+              </Card>
+            )}
+
+            {isRoleDriver && (
+              <>
+                <div className="flex justify-between items-center">
+                  <div>
+                    <h2 className="text-2xl font-bold">My Rides</h2>
+                    <p className="text-gray-600">
+                      {ridesLoading
+                        ? "Loading..."
+                        : `${myRides.length} ride(s)`}
+                    </p>
+                  </div>
+                  <button
+                    onClick={fetchMyRides}
+                    disabled={ridesLoading}
+                    className="px-4 py-2 bg-blue-600 text-white rounded-xl disabled:opacity-50"
+                  >
+                    Refresh
+                  </button>
+                </div>
+
+                {ridesLoading && <p>Loading rides...</p>}
+                {ridesError && <p className="text-red-600">{ridesError}</p>}
+
+                {!ridesLoading && myRides.length === 0 && (
+                  <Card className="p-10 text-center rounded-2xl">
+                    <p className="mb-4">No rides published yet.</p>
+                    <Link
+                      to="/publish-ride"
+                      className="text-blue-600 font-semibold"
+                    >
+                      Publish your first ride
+                    </Link>
+                  </Card>
+                )}
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  {myRides.map((ride) => (
+                    <Link key={ride.id} to={`/ride-details/${ride.id}`}>
+                      <Card className="p-6 rounded-2xl hover:shadow-lg transition">
+                        <div className="flex justify-between mb-3">
+                          <StatusBadge status={ride.status} />
+                        </div>
+                        <AvailableRideCard
+                          startTime={ride.departureTime?.substring(0, 5)}
+                          endTime={ride.arrivalTime?.substring(0, 5)}
+                          from={ride.source}
+                          to={ride.destination}
+                          price={ride.pricePerSeat}
+                          rideDate={ride.rideDate}
+                          availableSeats={ride.availableSeats}
+                          status={ride.status}
+                          driver={{ name: "You", rating: 4.8 }}
+                        />
+                      </Card>
+                    </Link>
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
+        );
+
+      case "vehicle":
+        if (!isDriver() && !isAdmin()) return null;
+        return (
+          <div className="animate-fadeIn">
+            <Vehicle />
+          </div>
+        );
+>>>>>>> Stashed changes
+>>>>>>> 69748f3 (fix(profile): update axios instance and profile page)
 
       default:
         return null;
@@ -701,11 +538,12 @@ export default function Profile() {
   };
 
   /* --------------------------------------------------
-     Main Render
+      Main Render
   -------------------------------------------------- */
   return (
     <div className="min-h-[calc(100vh-64px)] bg-gradient-to-br from-blue-50 via-sky-50 to-indigo-50 py-10 flex justify-center items-start">
       <Card className="w-full max-w-5xl mx-auto p-8 shadow-2xl rounded-3xl bg-white/90 backdrop-blur border border-blue-100">
+<<<<<<< HEAD
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-semibold text-blue-900">
             My Account
@@ -715,21 +553,52 @@ export default function Profile() {
             <button
               onClick={() => setIsEditing(true)}
               className="px-4 py-2 rounded-full border text-sm"
+=======
+<<<<<<< Updated upstream
+
+        {/* ✅ TITLE ONLY  */}
+        <div className="mb-6">
+          <h1 className="text-2xl font-semibold text-blue-900">
+            My Account
+          </h1>
+=======
+        
+        {/* ✅ HEADER SECTION UPDATED */}
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-2xl font-semibold text-blue-900">
+            My Account
+          </h1>
+
+          {/* Logic for Edit/Cancel buttons commented out for now as per current layout */}
+          {/* {!isEditing ? (
+            <button
+              onClick={() => setIsEditing(true)}
+              className="px-4 py-2 rounded-full border border-blue-200 text-sm hover:bg-blue-50 transition"
+>>>>>>> 69748f3 (fix(profile): update axios instance and profile page)
             >
               Edit Profile
             </button>
           ) : (
             <button
               onClick={handleCancelEdit}
+<<<<<<< HEAD
               className="px-4 py-2 rounded-full bg-red-500 text-white text-sm"
             >
               Cancel
             </button>
           )}
+=======
+              className="px-4 py-2 rounded-full bg-red-500 text-white text-sm hover:bg-red-600 transition"
+            >
+              Cancel
+            </button>
+          )} */}
+>>>>>>> Stashed changes
+>>>>>>> 69748f3 (fix(profile): update axios instance and profile page)
         </div>
 
         <div className="grid gap-6 md:grid-cols-[260px,1fr]">
-          {/* Sidebar */}
+          {/* Sidebar Navigation */}
           <aside className="bg-gradient-to-b from-blue-100 to-blue-50 rounded-2xl p-5 space-y-3 text-blue-900 shadow-lg">
             <SidebarItem
               label="Overview"
@@ -755,7 +624,9 @@ export default function Profile() {
               isActive={activeSection === "rides"}
               onClick={() => setActiveSection("rides")}
             />
+            {/* Conditional sidebar link for privileged roles */}
             {(isDriver() || isAdmin()) && (
+<<<<<<< HEAD
               <SidebarItem
                 label="Add Vehicle"
                 icon={Car}
@@ -763,18 +634,38 @@ export default function Profile() {
                 onClick={() => setActiveSection("vehicle")}
               />
             )}
+=======
+<<<<<<< Updated upstream
+  <SidebarItem
+    label="Add Vehicle"
+    icon={Car}
+    isActive={activeSection === "vehicle"}
+    onClick={() => setActiveSection("vehicle")}
+  />
+)}
+>>>>>>> 69748f3 (fix(profile): update axios instance and profile page)
 
+=======
+              <SidebarItem
+                label="Add Vehicle"
+                icon={Car}
+                isActive={activeSection === "vehicle"}
+                onClick={() => setActiveSection("vehicle")}
+              />
+            )}
+>>>>>>> Stashed changes
           </aside>
 
-          {/* Main Content */}
+          {/* Content Viewport */}
           <main className="space-y-6 transition-all duration-300">
             {renderSection()}
 
-            {isEditing && (
+            {/* Save button appears only when editing the Overview section */}
+            {isEditing && activeSection === "overview" && (
               <div className="flex justify-end mt-6">
                 <button
                   onClick={handleSaveProfile}
-                  className="px-6 py-2 rounded-full bg-blue-600 text-white hover:bg-blue-700"
+                  className="px-6 py-2 rounded-full bg-blue-600 text-white hover:bg-blue-700 transition"
                 >
                   Save Changes
                 </button>
@@ -784,6 +675,7 @@ export default function Profile() {
         </div>
       </Card>
 
+      {/* Local styles for tab-switching animations */}
       <style>{`
         .animate-fadeIn {
           animation: fadeIn 0.45s ease-in-out;
@@ -795,5 +687,12 @@ export default function Profile() {
       `}</style>
     </div>
   );
+<<<<<<< Updated upstream
 }
+<<<<<<< HEAD
 
+=======
+=======
+}
+>>>>>>> Stashed changes
+>>>>>>> 69748f3 (fix(profile): update axios instance and profile page)

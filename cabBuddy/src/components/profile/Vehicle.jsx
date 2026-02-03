@@ -9,32 +9,57 @@ import {
   deleteVehicle,
 } from "../../api/VehicleApi";
 
+/**
+ * Vehicle Component
+ * Manages the registration, listing, updating, and deletion of driver vehicles.
+ * Ensuring data persistence through JWT-based fetching on component mount.
+ */
 export default function Vehicle() {
+  // Array to store the list of vehicles fetched from the database
   const [vehicles, setVehicles] = useState([]);
+  
+  // State for the controlled form inputs
   const [formData, setFormData] = useState({
     vehicleNumber: "",
     model: "",
     type: "",
     capacity: "",
   });
+  
+  // Tracks the ID of the vehicle currently being edited (null when in 'Add' mode)
   const [editingId, setEditingId] = useState(null);
+  
+  // Loading state to provide visual feedback during API calls
   const [loading, setLoading] = useState(false);
 
   /* ----------------------------------
-      Logic (Get logic remains same)
+      LOGIC FIX (ONLY THIS PART CHANGED)
+      ✅ token based loadin
   ---------------------------------- */
+  /**
+   * Effect Hook: Runs once on mount.
+   * Checks for a valid JWT token to trigger the initial data fetch.
+   * This is critical for keeping the right-side data visible after a page refresh.
+   */
   useEffect(() => {
-    const role = localStorage.getItem("role"); // DRIVER / USER
-
-    if (role === "DRIVER") {
+    const token = localStorage.getItem("token");
+    if (token) {
       loadVehicles();
     }
   }, []);
 
+  /**
+   * Fetches the driver's specific vehicles from the backend.
+   * Uses the stored token to authenticate the request.
+   */
   const loadVehicles = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+
     try {
       setLoading(true);
-      const response = await getDriverVehicles();
+      const response = await getDriverVehicles(token);
+      // Synchronize local state with the backend response
       setVehicles(response.data || []);
     } catch (error) {
       console.error("Failed to load vehicles", error);
@@ -44,14 +69,20 @@ export default function Vehicle() {
     }
   };
 
+  /**
+   * Handles real-time updates to form state as the user types.
+   */
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   /* ----------------------------------
-      POST/PUT Logic (With Auth Headers)
+      POST / PUT (UNCHANGED)
   ---------------------------------- */
+  /**
+   * Submits the form data to either create a new vehicle or update an existing one.
+   */
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -65,12 +96,14 @@ export default function Vehicle() {
         capacity: parseInt(formData.capacity),
       };
 
+      // Branch logic based on whether we are editing an existing record or creating a new one
       if (editingId) {
         await updateVehicle(editingId, vehicleData, token);
       } else {
         await addVehicle(vehicleData, token);
       }
 
+      // Reset form and UI state after successful submission
       setFormData({
         vehicleNumber: "",
         model: "",
@@ -78,7 +111,10 @@ export default function Vehicle() {
         capacity: "",
       });
       setEditingId(null);
-      loadVehicles();
+
+      // Re-fetch data from the backend to ensure the right-side list is current
+      loadVehicles(); 
+
       alert("Vehicle saved successfully!");
     } catch (error) {
       console.error("Vehicle save failed", error.response?.data || error.message);
@@ -92,6 +128,9 @@ export default function Vehicle() {
     }
   };
 
+  /**
+   * Populates the form with existing vehicle data to enter Edit mode.
+   */
   const handleEdit = (vehicle) => {
     setFormData({
       vehicleNumber: vehicle.vehicleNumber,
@@ -102,6 +141,9 @@ export default function Vehicle() {
     setEditingId(vehicle.id);
   };
 
+  /**
+   * Removes a vehicle record from the backend and updates the UI.
+   */
   const handleDelete = async (id) => {
     if (!window.confirm("Delete this vehicle?")) return;
 
@@ -109,6 +151,7 @@ export default function Vehicle() {
 
     try {
       await deleteVehicle(id, token);
+      // Optimistically update the UI by filtering out the deleted item
       setVehicles((prev) => prev.filter((v) => v.id !== id));
     } catch (error) {
       console.error("Delete failed", error);
@@ -117,7 +160,7 @@ export default function Vehicle() {
   };
 
   /* ----------------------------------
-      UI
+      UI 
   ---------------------------------- */
   return (
     <div className="min-h-screen bg-slate-50 p-4 md:p-8">
@@ -157,10 +200,7 @@ export default function Vehicle() {
                     Vehicle Number
                   </label>
                   <div className="relative">
-                    <Hash
-                      className="absolute left-3 top-3 text-slate-400"
-                      size={18}
-                    />
+                    <Hash className="absolute left-3 top-3 text-slate-400" size={18} />
                     <input
                       type="text"
                       name="vehicleNumber"
@@ -178,10 +218,7 @@ export default function Vehicle() {
                     Model Name
                   </label>
                   <div className="relative">
-                    <Info
-                      className="absolute left-3 top-3 text-slate-400"
-                      size={18}
-                    />
+                    <Info className="absolute left-3 top-3 text-slate-400" size={18} />
                     <input
                       type="text"
                       name="model"
@@ -216,11 +253,7 @@ export default function Vehicle() {
                           onChange={handleChange}
                           className="sr-only"
                         />
-                        {type === "CAR" ? (
-                          <Car size={18} />
-                        ) : (
-                          <Bike size={18} />
-                        )}
+                        {type === "CAR" ? <Car size={18} /> : <Bike size={18} />}
                         <span className="font-semibold text-sm">{type}</span>
                       </label>
                     ))}
@@ -232,10 +265,7 @@ export default function Vehicle() {
                     Seat Capacity
                   </label>
                   <div className="relative">
-                    <Users
-                      className="absolute left-3 top-3 text-slate-400"
-                      size={18}
-                    />
+                    <Users className="absolute left-3 top-3 text-slate-400" size={18} />
                     <input
                       type="number"
                       name="capacity"
@@ -281,39 +311,34 @@ export default function Vehicle() {
 
           {/* Right Column: List */}
           <div className="lg:col-span-8 space-y-4">
+            {/* Loading Skeleton/Spinner View */}
             {loading ? (
               <div className="flex flex-col items-center justify-center h-64 space-y-4 text-slate-400">
                 <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-                <p className="font-medium animate-pulse">
-                  Syncing with garage...
-                </p>
+                <p className="font-medium animate-pulse">Syncing with garage...</p>
               </div>
             ) : vehicles.length === 0 ? (
+              /* Empty State View */
               <div className="bg-white border-2 border-dashed border-slate-200 rounded-3xl p-12 text-center">
                 <div className="bg-slate-50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Car className="text-slate-300" size={40} />
                 </div>
-                <h3 className="text-xl font-bold text-slate-700">
-                  No vehicles found
-                </h3>
+                <h3 className="text-xl font-bold text-slate-700">No vehicles found</h3>
                 <p className="text-slate-400 max-w-xs mx-auto mt-2">
-                  Your fleet is currently empty. Use the form to add your first
-                  vehicle.
+                  Your fleet is currently empty. Use the form to add your first vehicle.
                 </p>
               </div>
             ) : (
+              /* Vehicle List View */
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {vehicles.map((vehicle) => (
                   <Card
                     key={vehicle.id}
                     className="p-5 border-none shadow-md hover:shadow-xl transition-all group bg-white rounded-3xl relative overflow-hidden"
                   >
+                    {/* Background Decorative Icon */}
                     <div className="absolute top-0 right-0 p-8 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity">
-                      {vehicle.type === "CAR" ? (
-                        <Car size={80} />
-                      ) : (
-                        <Bike size={80} />
-                      )}
+                      {vehicle.type === "CAR" ? <Car size={80} /> : <Bike size={80} />}
                     </div>
 
                     <div className="flex flex-col h-full justify-between gap-6">
@@ -325,21 +350,17 @@ export default function Vehicle() {
                           <h4 className="text-xl font-black text-slate-800 tracking-tight uppercase">
                             {vehicle.vehicleNumber}
                           </h4>
-                          <p className="text-slate-500 font-medium">
-                            {vehicle.model}
-                          </p>
+                          <p className="text-slate-500 font-medium">{vehicle.model}</p>
                         </div>
                         <div className="bg-slate-50 px-3 py-1 rounded-xl flex items-center gap-1.5 border border-slate-100">
-                          <Users
-                            size={14}
-                            className="text-slate-400"
-                          />
+                          <Users size={14} className="text-slate-400" />
                           <span className="text-sm font-bold text-slate-600">
                             {vehicle.capacity}
                           </span>
                         </div>
                       </div>
 
+                      {/* Action Buttons */}
                       <div className="flex gap-2 pt-2 border-t border-slate-50">
                         <Button
                           variant="secondary"

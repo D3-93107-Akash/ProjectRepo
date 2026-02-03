@@ -4,13 +4,31 @@ import api from "./axiosInstance";
 // CREATE RIDE (JWT REQUIRED)
 // ==============================
 export const createRide = (rideData) => {
-  return api.post("/rides", rideData);
+  const token = localStorage.getItem("authToken");
+
+  return api.post("/rides", rideData, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 };
 
+<<<<<<< HEAD
+=======
+<<<<<<< Updated upstream
+// SEARCH RIDES with query parameters
+export const searchRides = (source, destination, date) => {
+=======
+
+>>>>>>> 69748f3 (fix(profile): update axios instance and profile page)
 // ==============================
 // SEARCH RIDES (PUBLIC - NO JWT)
 // ==============================
 export const searchRides = (source, destination, rideDate) => {
+<<<<<<< HEAD
+=======
+>>>>>>> Stashed changes
+>>>>>>> 69748f3 (fix(profile): update axios instance and profile page)
   const params = new URLSearchParams();
 
   if (source) params.append("source", source);
