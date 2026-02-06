@@ -4,8 +4,15 @@ import api from "./axiosInstance";
 // CREATE RIDE (JWT REQUIRED)
 // ==============================
 export const createRide = (rideData) => {
-  return api.post("/rides", rideData);
+  const token = localStorage.getItem("authToken");
+
+  return api.post("/rides", rideData, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 };
+
 
 // ==============================
 // SEARCH RIDES (PUBLIC - NO JWT)

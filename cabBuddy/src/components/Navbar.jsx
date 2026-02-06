@@ -84,9 +84,9 @@ export default function Navbar() {
                 <Link to="/my-bookings">My Bookings</Link>
               </DropdownMenuItem>
                 
-              <DropdownMenuItem asChild>
+              {/* <DropdownMenuItem asChild>
                 <Link to="/my-payments">Payments</Link>
-              </DropdownMenuItem>
+              </DropdownMenuItem> */}
 
 
               <DropdownMenuItem asChild>
